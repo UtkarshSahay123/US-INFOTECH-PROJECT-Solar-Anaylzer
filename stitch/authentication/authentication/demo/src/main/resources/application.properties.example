@@ -1,37 +1,33 @@
 spring.application.name=solar_analyzer_authentication
-spring.datasource.url=jdbc:postgresql://localhost:5432/solar_analyzer_auth
-spring.datasource.username=postgres
-spring.datasource.password=root
+spring.datasource.url=jdbc:postgresql://${DB_HOST}/${DB_NAME}?sslmode=require
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASSWORD}
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-
-# JWT Key Config
-jwt.secret=dGhpc19pc19hX3ZlcnlfbG9uZ19zZWNyZXRfa2V5X3RoYXRfaXNfYXRfbGVhc3RfNTEyX2JpdHNfbG9uZ19zb190aGVfand0X2dlbmVyYXRvcl9kb2VzX25vdF9jb21wbGFpbl93aGVuX2NvbXBpbGluZ19vcl9ydW5uaW5nX2FwcA==
+jwt.secret=${JWT_SECRET}
 jwt.expiration=86400000
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
 
-# OAuth2 Google Setup (Replace with your keys)
-spring.security.oauth2.client.registration.google.client-id=YOUR_GOOGLE_CLIENT_ID
-spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_CLIENT_SECRET
-
-# OAuth2 Microsoft Setup (Replace with your keys)
-spring.security.oauth2.client.registration.microsoft.client-id=YOUR_MICROSOFT_CLIENT_ID
-spring.security.oauth2.client.registration.microsoft.client-secret=YOUR_MICROSOFT_CLIENT_SECRET
+spring.security.oauth2.client.registration.microsoft.client-id=${MS_CLIENT_ID}
+spring.security.oauth2.client.registration.microsoft.client-secret=${MS_CLIENT_SECRET}
 spring.security.oauth2.client.registration.microsoft.scope=openid,profile,email
 spring.security.oauth2.client.registration.microsoft.authorization-grant-type=authorization_code
 spring.security.oauth2.client.registration.microsoft.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
 spring.security.oauth2.client.registration.microsoft.client-name=Microsoft
+
 spring.security.oauth2.client.provider.microsoft.authorization-uri=https://login.microsoftonline.com/common/oauth2/v2.0/authorize
 spring.security.oauth2.client.provider.microsoft.token-uri=https://login.microsoftonline.com/common/oauth2/v2.0/token
 spring.security.oauth2.client.provider.microsoft.jwk-set-uri=https://login.microsoftonline.com/common/discovery/v2.0/keys
 spring.security.oauth2.client.provider.microsoft.user-info-uri=https://graph.microsoft.com/oidc/userinfo
 spring.security.oauth2.client.provider.microsoft.user-name-attribute=sub
 
-# Email SMTP Configuration for OTP (Replace with your details)
+# Email SMTP Configuration for OTP
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=YOUR_GMAIL_ADDRESS
-spring.mail.password=YOUR_GMAIL_APP_PASSWORD
+spring.mail.username=${EMAIL_USER}
+spring.mail.password=${EMAIL_PASS}
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
