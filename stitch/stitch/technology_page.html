@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tech Stack &amp; Mission | SolarPulse AI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "solar-gold": "#fbbf24",
+                        "solar-glow": "#fcd34d",
+                        "background-dark": "#050806",
+                        "panel-dark": "#0d140e",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #050806;
+            color: #f8fafc;
+        }
+        .grid-bg {
+            background-image: radial-gradient(rgba(19, 236, 91, 0.08) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+        .sun-shine-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(19, 236, 91, 0.1);
+        }
+        .sun-shine-card:hover {
+            transform: translateY(-5px);
+            border-color: #fbbf24;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.3), inset 0 0 20px rgba(251, 191, 36, 0.1);
+        }
+        .sun-shine-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .sun-shine-card:hover::before {
+            opacity: 1;
+        }
+        .chart-bar {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
+        }
+        .data-viz-container:hover .chart-bar {
+            background-color: #fbbf24;
+        }
+        .glass-panel {
+            background: rgba(13, 20, 14, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(19, 236, 91, 0.1);
+        }
+    </style>
+</head>
+
+<body class="antialiased grid-bg min-h-screen">
+    <nav class="sticky top-0 w-full z-50 bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-10">
+                    <a class="flex items-center gap-3 group" href="/">
+                        <div
+                            class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(19,236,91,0.3)]">
+                            <span class="material-symbols-outlined text-background-dark font-bold">solar_power</span>
+                        </div>
+                        <span class="text-2xl font-bold tracking-tight text-white italic">Solar<span
+                                class="text-primary">Pulse</span></span>
+                    </a>
+                    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                        <a class="hover:text-primary transition-colors" href="index.html">Home</a>
+                        <a class="hover:text-primary transition-colors" href="final_login_page.html">Login</a>
+                        <a class="text-primary border-b-2 border-primary pb-1"
+                            href="technology_page.html">Technology</a>
+                    </div>
+                </div>
+                <a class="flex items-center gap-4">
+
+                    <a href="final_login_page.html">
+                        <button
+                            class="bg-primary text-black font-bold text-xs px-6 py-2.5 rounded shadow-[0_0_20px_rgba(19,236,91,0.4)] hover:scale-105 transition-transform">
+                            GET STARTED
+                        </button>
+                    </a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <section class="mb-24 relative">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-[120px]"></div>
+            <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-solar-gold/5 rounded-full blur-[120px]"></div>
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        <span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Our Mission</span>
+                    </div>
+                    <h1 class="text-5xl lg:text-6xl font-bold leading-tight mb-8">
+                        Accelerating the <span class="text-solar-gold">Solar Revolution</span> through AI.
+                    </h1>
+                    <p class="text-xl text-slate-400 leading-relaxed mb-10">
+                        SolarPulse leverages cutting-edge computer vision and satellite imagery to provide instant,
+                        precise solar potential estimations for every residential rooftop. We're bridging the gap
+                        between raw data and clean energy adoption.
+                    </p>
+                    <div class="grid grid-cols-3 gap-8">
+                        <div>
+                            <p class="text-3xl font-bold text-white mb-1">98.4%</p>
+                            <p class="text-xs font-mono text-slate-500 uppercase">Detection Accuracy</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-white mb-1">15M+</p>
+                            <p class="text-xs font-mono text-slate-500 uppercase">Roofs Indexed</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-white mb-1">&lt; 2s</p>
+                            <p class="text-xs font-mono text-slate-500 uppercase">Processing Time</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-3xl p-8 relative overflow-hidden group data-viz-container">
+                    <div class="flex items-center justify-between mb-10">
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-primary">Regional Energy Potential
+                        </h3>
+                        <span class="text-xs font-mono text-slate-500">kW/h Analysis</span>
+                    </div>
+                    <div class="h-64 flex items-end justify-between gap-3">
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[60%]"
+                            style="height: 40%"></div>
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[85%]"
+                            style="height: 55%"></div>
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[45%]"
+                            style="height: 70%"></div>
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[95%]"
+                            style="height: 65%"></div>
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[70%]"
+                            style="height: 50%"></div>
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[30%]"
+                            style="height: 80%"></div>
+                        <div class="chart-bar w-full bg-primary/20 rounded-t-lg group-hover:h-[100%]"
+                            style="height: 45%"></div>
+                    </div>
+                    <div class="mt-8 flex justify-between text-[10px] font-mono text-slate-500">
+                        <span>JAN</span><span>MAR</span><span>MAY</span><span>JUL</span><span>SEP</span><span>NOV</span>
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-solar-gold/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="mb-24">
+            <div class="flex flex-col items-center mb-16">
+                <h2 class="text-sm font-bold uppercase tracking-[0.4em] text-primary mb-4">The Engine Under the Hood
+                </h2>
+                <h3 class="text-4xl font-bold text-white">Our Technology Stack</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="sun-shine-card bg-panel-dark p-8 rounded-2xl group cursor-default">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:border-solar-gold/50 transition-colors">
+                        <span
+                            class="material-symbols-outlined text-4xl text-blue-400 group-hover:text-solar-gold transition-colors">web_asset</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-2">React Framework</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Delivering a lightning-fast, responsive frontend interface for complex 3D solar visualization.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">UI/UX</span>
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Real-time</span>
+                    </div>
+                </div>
+                <div class="sun-shine-card bg-panel-dark p-8 rounded-2xl group cursor-default">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:border-solar-gold/50 transition-colors">
+                        <span
+                            class="material-symbols-outlined text-4xl text-green-400 group-hover:text-solar-gold transition-colors">terminal</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-2">Python &amp; FastAPI</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        High-performance asynchronous backend services for handling massive geospatial data requests.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">API</span>
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Back-end</span>
+                    </div>
+                </div>
+                <div class="sun-shine-card bg-panel-dark p-8 rounded-2xl group cursor-default">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:border-solar-gold/50 transition-colors">
+                        <span
+                            class="material-symbols-outlined text-4xl text-red-400 group-hover:text-solar-gold transition-colors">visibility</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-2">OpenCV</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Advanced computer vision for satellite image pre-processing and edge detection of roof
+                        structures.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Computer
+                            Vision</span>
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Imaging</span>
+                    </div>
+                </div>
+                <div class="sun-shine-card bg-panel-dark p-8 rounded-2xl group cursor-default">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:border-solar-gold/50 transition-colors">
+                        <span
+                            class="material-symbols-outlined text-4xl text-purple-400 group-hover:text-solar-gold transition-colors">psychology</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-2">YOLOv8 Neural Net</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        State-of-the-art object detection for identifying roof obstructions like vents, chimneys, and
+                        skylights.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Deep
+                            Learning</span>
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">AI</span>
+                    </div>
+                </div>
+                <div class="sun-shine-card bg-panel-dark p-8 rounded-2xl group cursor-default">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:border-solar-gold/50 transition-colors">
+                        <span
+                            class="material-symbols-outlined text-4xl text-blue-500 group-hover:text-solar-gold transition-colors">map</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-2">Google Maps Platform</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Seamless integration for global rooftop imagery and high-resolution spatial awareness.
+                    </p>
+                    <div class="flex gap-2">
+                        <span
+                            class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Geospatial</span>
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Mapping</span>
+                    </div>
+                </div>
+                <div class="sun-shine-card bg-panel-dark p-8 rounded-2xl group cursor-default">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:border-solar-gold/50 transition-colors">
+                        <span
+                            class="material-symbols-outlined text-4xl text-orange-400 group-hover:text-solar-gold transition-colors">rocket_launch</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-2">NASA POWER API</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        Harnessing global meteorology and solar radiation data to calculate precise energy production.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Climate
+                            Data</span>
+                        <span class="text-[10px] font-mono bg-white/5 px-2 py-1 rounded text-slate-500">Solar</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+            <div class="glass-panel p-8 rounded-2xl group data-viz-container">
+                <div class="flex items-center gap-3 mb-8">
+                    <span class="material-symbols-outlined text-primary">analytics</span>
+                    <h4 class="font-bold text-lg">Inference Latency Optimization</h4>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <span class="text-[10px] font-mono text-slate-500 w-24">V2-ENGINE</span>
+                        <div class="flex-grow h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-slate-600 group-hover:bg-primary transition-all duration-700"
+                                style="width: 80%"></div>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-400">450ms</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-[10px] font-mono text-slate-500 w-24">V3-ENGINE</span>
+                        <div class="flex-grow h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-slate-600 group-hover:bg-primary transition-all duration-700"
+                                style="width: 45%"></div>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-400">220ms</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-[10px] font-mono text-primary w-24">V4-SOLAR</span>
+                        <div class="flex-grow h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-solar-gold group-hover:shadow-[0_0_15px_#fbbf24] transition-all duration-700"
+                                style="width: 15%"></div>
+                        </div>
+                        <span class="text-[10px] font-mono text-solar-gold font-bold">85ms</span>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-panel p-8 rounded-2xl group data-viz-container overflow-hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">monitoring</span>
+                        <h4 class="font-bold text-lg">Model Training Accuracy</h4>
+                    </div>
+                    <span class="text-[10px] font-mono text-primary">99.2% MAX</span>
+                </div>
+                <div class="relative h-24 flex items-end gap-1">
+                    <div class="w-full bg-primary/10 group-hover:bg-primary/30 group-hover:h-[40%] transition-all"
+                        style="height: 20%"></div>
+                    <div class="w-full bg-primary/10 group-hover:bg-primary/40 group-hover:h-[60%] transition-all"
+                        style="height: 35%"></div>
+                    <div class="w-full bg-primary/10 group-hover:bg-primary/50 group-hover:h-[80%] transition-all"
+                        style="height: 50%"></div>
+                    <div class="w-full bg-primary/20 group-hover:bg-primary/60 group-hover:h-[90%] transition-all"
+                        style="height: 70%"></div>
+                    <div class="w-full bg-primary/30 group-hover:bg-primary/70 group-hover:h-[95%] transition-all"
+                        style="height: 85%"></div>
+                    <div class="w-full bg-primary group-hover:bg-solar-gold group-hover:h-[100%] group-hover:shadow-[0_0_20px_#fbbf24] transition-all"
+                        style="height: 98%"></div>
+                </div>
+                <p class="mt-4 text-[10px] font-mono text-slate-500 italic">EPOCH_LOG: Optimization complete for
+                    residential roof segmentation model.</p>
+            </div>
+        </section>
+    </main>
+    <footer class="border-t border-primary/10 bg-background-dark/50 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div
+                class="flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-primary"></div>
+                        <span>SYSTEM_ONLINE: v4.2.0</span>
+                    </div>
+                    <span>© 2024 SolarPulse AI</span>
+                </div>
+                <div class="flex gap-10">
+                    <!-- <a class="hover:text-primary transition-colors" href="#">Whitepaper</a>
+<a class="hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="hover:text-primary transition-colors" href="#">Security</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+</div> -->
+                </div>
+            </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>SolarPulse AI | Precision Rooftop Solar Estimation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "eco-green": "#2d5a27",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    animation: {
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient-shift': 'gradient-shift 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'check-bounce': 'check-bounce 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(19, 236, 91, 0.4)' },
+                            '50%': { boxShadow: '0 0 20px 10px rgba(19, 236, 91, 0.2)' },
+                        },
+                        'gradient-shift': {
+                            '0%, 100%': { 'background-color': '#102216' },
+                            '50%': { 'background-color': '#1a3a24' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'check-bounce': {
+                            '0%': { transform: 'scale(0)', opacity: '0' },
+                            '50%': { transform: 'scale(1.2)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .glass-panel {
+            background: rgba(16, 34, 22, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(19, 236, 91, 0.1);
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(16, 34, 22, 0.4), #102216);
+        }.reveal-card {
+            view-timeline-name: --card-reveal;
+            view-timeline-axis: block;
+            animation-timeline: --card-reveal;
+            animation-name: fade-in-up;
+            animation-range: entry 10% cover 30%;
+            animation-fill-mode: both;
+        }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .parallax-img {
+            view-timeline-name: --parallax;
+            animation-timeline: --parallax;
+            animation-name: parallax-effect;
+            animation-range: entry 0% exit 100%;
+        }
+        @keyframes parallax-effect {
+            from { transform: translateY(10%) scale(1.1); }
+            to { transform: translateY(-10%) scale(1.1); }
+        }
+        .list-reveal {
+            view-timeline-name: --list;
+            animation-timeline: --list;
+            animation-name: slide-in-left;
+            animation-range: entry 10% cover 40%;
+            animation-fill-mode: both;
+        }
+        @keyframes slide-in-left {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 antialiased animate-gradient-shift">
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-background-dark font-bold">solar_power</span>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight text-white">Solar<span
+                            class="text-primary">Pulse</span></span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors"
+                        href="technology_page.html">Technology</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors"
+                        href="final_login_page.html">Login</a>
+                    <a href="final_login_page.html">
+                        <button
+                            class="bg-primary hover:bg-primary/90 text-background-dark px-6 py-2.5 rounded-lg font-bold transition-all transform hover:scale-105 animate-pulse-glow">
+                            Calculate Savings
+                    </a>
+                    </button>
+                </div>
+                <div class="md:hidden">
+                    <span class="material-symbols-outlined text-primary">menu</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Modern sustainable home" class="w-full h-full object-cover"
+                data-alt="Modern house with sleek integrated solar panels"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYDCrnYgl_uHVecH-oNwSXeQreineXqNfxeJEttZqepORadE59Cs1PGhRw241lzi42cnv1ZFx-MVRsdhqcsIjYg4xGVg8mHRhl5Q0fNSPsq_BVelMXQ6U6wwgzmjKc_1HyxKN_uhyB9VOp8EiUKwD5_OY3Zeu9wkdKQ8KW1g3GRj4cf84ExQhCKX_fhT7269Qx9Vo1cb06GQB9tRM2aqX5dolOp3cea6hRqGBaZeUsmqtW7rZwQauZyQ2VNvyhKFlFBLswmMrDzX0" />
+            <div class="absolute inset-0 hero-gradient"></div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-3xl">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-6">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    AI-POWERED SATELLITE ANALYSIS
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
+                    Power Your Home with <span class="text-primary">Precision.</span>
+                </h1>
+                <p class="text-xl text-slate-300 mb-10 leading-relaxed max-w-2xl">
+                    Using advanced orbital imagery and neural networks, we calculate your roof's solar potential down to
+                    the watt. No site visit required.
+                </p>
+
+                <div id="weatherResults"
+                    class="mt-6 p-6 glass-panel rounded-xl flex flex-col md:flex-row gap-6 items-center justify-between text-left border-l-4 border-l-primary shadow-2xl animate-pulse-glow max-w-2xl">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-16 h-16 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-4xl text-primary animate-spin">sync</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Live
+                                Telemetry</p>
+                            <p class="text-xl font-bold text-white">Acquiring GPS coordinates...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <div class="bg-primary py-4 relative z-20">
+        <div
+            class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center text-background-dark font-bold text-sm md:text-base">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">eco</span>
+                2.4M Tons of CO2 Reduced
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">savings</span>
+                $420M Saved by Homeowners
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">public</span>
+                Active in 42 Countries
+            </div>
+        </div>
+    </div>
+    <section class="py-24 relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2">
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Why Choose SolarPulse?</h2>
+                <div class="h-1.5 w-24 bg-primary mx-auto rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="reveal-card stagger-1 group p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all hover:-translate-y-2">
+                    <div
+                        class="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-background-dark transition-all duration-500">
+                        <span class="material-symbols-outlined text-3xl">currency_exchange</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">Massive Savings</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Typical users reduce their monthly energy bills by 70% to 90% from month one. Our AI finds the
+                        most cost-effective panel layout for your specific roof geometry.
+                    </p>
+                </div>
+                <div
+                    class="reveal-card stagger-2 group p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all hover:-translate-y-2">
+                    <div
+                        class="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-background-dark transition-all duration-500">
+                        <span class="material-symbols-outlined text-3xl">psychology</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">AI-Driven Insights</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        We don't just guess. Our neural network analyzes historical weather patterns, shading from
+                        nearby trees, and sun trajectory to provide a 25-year production forecast.
+                    </p>
+                </div>
+                <div
+                    class="reveal-card stagger-3 group p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all hover:-translate-y-2">
+                    <div
+                        class="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-background-dark transition-all duration-500">
+                        <span class="material-symbols-outlined text-3xl">travel_explore</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">Zero Hassle Setup</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        From satellite mapping to connecting you with certified local installers, we handle the
+                        complexity. Get your quote in 60 seconds, not 60 days.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-24 bg-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div class="aspect-square rounded-2xl overflow-hidden border-4 border-white/10 shadow-2xl relative">
+                        <img alt="Satellite view of a residential area"
+                            class="w-full h-full object-cover parallax-img scale-110"
+                            data-alt="Satellite thermal map showing solar potential of rooftops"
+                            data-location="Palo Alto, California"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW1KKFLBJERYWjefKOcJjRwJjpdGczwsWCWVYGV8-73YjqM07_kLHxMscfpWBgXd2pQ0FcdlI-dpb3G_igvXxacDCXXoK3JrSm10UNFKuOS4KTccky8Z6n3WKeYIbEWat0gTYNAmjZUxRdLocKC5dK5w0zozG5l5s9iA06CJHXUa3mdQMlymts0e2jzWVrgi7SzdjJGgCSHDyc2PtV-sh9Jpb5WWU6gAPmI3RyBxunhAjCUfKKcNR0arZygO4X_y57HJhn3g3Dxkw" />
+                        <div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+                        <div
+                            class="absolute top-8 left-8 bg-background-dark/80 backdrop-blur p-4 rounded-xl border border-primary/30 z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
+                                <span class="text-xs font-bold tracking-widest text-primary uppercase">Active
+                                    Analysis</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute -bottom-6 -right-6 glass-panel p-6 rounded-xl border border-primary/20 max-w-[200px] shadow-2xl animate-float z-10">
+                        <p class="text-xs text-slate-400 mb-1">Estimated Production</p>
+                        <p class="text-2xl font-bold text-primary">12,450 <span
+                                class="text-sm font-normal">kWh/yr</span></p>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold mb-6 leading-tight">Advanced Mapping<br /><span
+                            class="text-primary">Without the Site Visit.</span></h2>
+                    <p class="text-slate-300 text-lg mb-8 leading-relaxed">
+                        Our LIDAR-based processing technology creates a 3D model of your home, accounting for every
+                        chimney, vent, and overhanging branch that could affect your energy harvest.
+                    </p>
+                    <ul class="space-y-4 mb-10">
+                        <li class="list-reveal flex items-start gap-3 stagger-1">
+                            <span
+                                class="material-symbols-outlined text-primary mt-1 animate-check-bounce">check_circle</span>
+                            <div>
+                                <span class="font-bold text-white">Shading Analysis</span>
+                                <p class="text-sm text-slate-400">High-resolution foliage detection across all four
+                                    seasons.</p>
+                            </div>
+                        </li>
+                        <li class="list-reveal flex items-start gap-3 stagger-2">
+                            <span
+                                class="material-symbols-outlined text-primary mt-1 animate-check-bounce">check_circle</span>
+                            <div>
+                                <span class="font-bold text-white">Pitch &amp; Orientation</span>
+                                <p class="text-sm text-slate-400">Automatic calculation of the ideal tilt for maximum
+                                    absorption.</p>
+                            </div>
+                        </li>
+                        <li class="list-reveal flex items-start gap-3 stagger-3">
+                            <span
+                                class="material-symbols-outlined text-primary mt-1 animate-check-bounce">check_circle</span>
+                            <div>
+                                <span class="font-bold text-white">Incentive Lookup</span>
+                                <p class="text-sm text-slate-400">Instant application of federal and local tax credits.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    <button
+                        class="bg-primary/10 border border-primary/30 hover:bg-primary/20 text-primary font-bold py-4 px-10 rounded-lg transition-all hover:scale-105 active:scale-95">
+                        EXPLORE THE TECH
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="fixed bottom-8 right-8 z-50 md:hidden">
+        <button class="bg-primary text-background-dark p-4 rounded-full shadow-2xl animate-pulse-glow">
+            <span class="material-symbols-outlined">calculate</span>
+        </button>
+    </div>
+    <footer class="bg-background-dark py-16 border-t border-white/5 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+                            <span
+                                class="material-symbols-outlined text-background-dark text-sm font-bold">solar_power</span>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-white">Solar<span
+                                class="text-primary">Pulse</span></span>
+                    </div>
+                    <p class="text-slate-400 max-w-sm mb-8">
+                        Accelerating the world's transition to sustainable energy through data science and
+                        aerospace-grade imaging technology.
+                    </p>
+                    <div class="flex gap-4">
+                        <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all"
+                            href="#">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z">
+                                </path>
+                            </svg>
+                        </a>
+                        <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all"
+                            href="https://github.com/UtkarshSahay123/US-INFOTECH-PROJECT-Solar-Analyzer0">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0C5.373 0 0 5.373 0 12c0 5.302 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.627-5.373-12-12-12">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6">Product</h4>
+                    <ul class="space-y-4 text-slate-400 text-sm">
+                        <li><a class="hover:text-primary transition-colors" href="technology_page.html">How it Works</a>
+                        </li>
+                        <!-- <li><a class="hover:text-primary transition-colors" href="#">Residential</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Commercial</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">API for Installers</a></li> -->
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6">Company</h4>
+                    <ul class="space-y-4 text-slate-400 text-sm">
+                        <li><a class="hover:text-primary transition-colors cursor-pointer"
+                                onclick="openAboutModal()">About Us</a></li>
+                        <li><a class="hover:text-primary transition-colors"
+                                href="mailto:utkarshsahay321@gmail.com">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="aboutModal"
+                class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+                <div
+                    class="bg-[#102216] border border-primary/20 p-8 rounded-2xl max-w-lg relative shadow-2xl animate-pulse-glow">
+                    <button onclick="closeAboutModal()"
+                        class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+                        <span class="material-symbols-outlined font-bold">close</span>
+                    </button>
+                    <div class="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-3xl text-primary font-bold">corporate_fare</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">About US INFOTECH</h3>
+                    <p class="text-slate-300 leading-relaxed mb-6">
+                        US INFOTECH is committed to driving global transition towards a greener future. We are building
+                        this SolarPulse platform to empower homeowners and businesses with precision data, making
+                        sustainable development accessible and financially viable for everyone.
+                    </p>
+                    <div class="pt-6 border-t border-white/10 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span
+                                class="material-symbols-outlined text-primary text-sm font-bold">energy_savings_leaf</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Developing for a
+                            Zero-Carbon Future.</p>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function openAboutModal() {
+                    document.getElementById('aboutModal').classList.remove('hidden');
+                    document.getElementById('aboutModal').classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+                function closeAboutModal() {
+                    document.getElementById('aboutModal').classList.add('hidden');
+                    document.getElementById('aboutModal').classList.remove('flex');
+                    document.body.style.overflow = 'auto';
+                }
+            </script>
+            <div
+                class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+                <p>Developed by US INFOTECH</p>
+                <div class="flex gap-6">
+                    <a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+                    <a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+                    <a class="hover:text-white transition-colors" href="#">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const weatherResults = document.getElementById('weatherResults');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+
+                        try {
+                            weatherResults.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-4xl text-primary animate-spin">sync</span>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Live Telemetry</p>
+                                <p class="text-xl font-bold text-white">Connecting to satellites...</p>
+                            </div>
+                        </div>
+                    `;
+
+                            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=sunrise,sunset&current_weather=true&timezone=auto`;
+                            const res = await fetch(url);
+                            const data = await res.json();
+
+                            const current = data.current_weather;
+                            const daily = data.daily;
+
+                            const temp = current.temperature;
+
+                            // Format time
+                            const sunriseRaw = new Date(daily.sunrise[0]);
+                            const sunsetRaw = new Date(daily.sunset[0]);
+                            const options = { hour: '2-digit', minute: '2-digit' };
+                            const sunrise = sunriseRaw.toLocaleTimeString([], options);
+                            const sunset = sunsetRaw.toLocaleTimeString([], options);
+
+                            // Decode weather code
+                            const weatherCode = current.weathercode;
+                            let condition = "Sunny";
+                            let icon = "clear_day";
+                            if (weatherCode === 0) { condition = "Clear"; icon = "clear_day"; }
+                            else if (weatherCode <= 3) { condition = "Partly Cloudy"; icon = "partly_cloudy_day"; }
+                            else if (weatherCode <= 49) { condition = "Foggy"; icon = "foggy"; }
+                            else if (weatherCode <= 67) { condition = "Rainy"; icon = "rainy"; }
+                            else if (weatherCode <= 77) { condition = "Snowy"; icon = "ac_unit"; }
+                            else if (weatherCode <= 82) { condition = "Showers"; icon = "grain"; }
+                            else { condition = "Thunderstorm"; icon = "thunderstorm"; }
+
+                            weatherResults.classList.remove("animate-pulse-glow");
+                            weatherResults.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-4xl text-primary">${icon}</span>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Live Telemetry</p>
+                                <p class="text-3xl font-bold text-white">${temp}°C <span class="text-lg font-normal text-slate-300"> &bull; ${condition}</span></p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block w-px h-16 bg-white/10"></div>
+                        <div class="flex gap-10">
+                            <div>
+                                <p class="text-xs text-primary font-bold uppercase tracking-widest mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-sm">wb_twilight</span>Sunrise</p>
+                                <p class="text-2xl font-bold text-white">${sunrise}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-orange-400 font-bold uppercase tracking-widest mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-sm">clear_night</span>Sunset</p>
+                                <p class="text-2xl font-bold text-white">${sunset}</p>
+                            </div>
+                        </div>
+                    `;
+                        } catch (e) {
+                            weatherResults.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-4xl text-red-500">error</span>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Live Telemetry</p>
+                                <p class="text-xl font-bold text-red-400">Network connection failed</p>
+                            </div>
+                        </div>`;
+                        }
+                    },
+                    (error) => {
+                        weatherResults.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="material-symbols-outlined text-4xl text-orange-500">location_off</span>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Live Telemetry</p>
+                            <p class="text-xl font-bold text-orange-400">Location Access Denied</p>
+                            <p class="text-xs text-slate-400">Please enable GPS to view live telemetry.</p>
+                        </div>
+                    </div>`;
+                    }
+                );
+            } else {
+                weatherResults.innerHTML = `<p class="text-red-500">Geolocation is not supported by your browser.</p>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

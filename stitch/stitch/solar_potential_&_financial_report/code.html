@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solar Potential &amp; Financial Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#13ec5b",
+                "background-light": "#f6f8f6",
+                "background-dark": "#102216",
+                "neutral-dark": "#1a2e21",
+                "border-dark": "#2a4232",
+              },
+              fontFamily: {
+                "display": ["Space Grotesk"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(26, 46, 33, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(42, 66, 50, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<!-- Navigation -->
+<nav class="border-b border-border-dark bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-icons text-background-dark font-bold">wb_sunny</span>
+</div>
+<div>
+<h1 class="font-bold text-xl tracking-tight leading-none">HELIOS AI</h1>
+<p class="text-[10px] text-primary uppercase tracking-widest font-semibold">Solar Intelligence</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2 px-4 py-2 bg-neutral-dark rounded-full border border-border-dark">
+<span class="material-icons text-primary text-sm">location_on</span>
+<span class="text-sm font-medium">742 Evergreen Terrace, Springfield</span>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-background-dark px-5 py-2 rounded-lg font-bold transition-all flex items-center gap-2">
+<span class="material-icons text-sm">download</span>
+                    PDF REPORT
+                </button>
+</div>
+</div>
+</nav>
+<main class="max-w-[1600px] mx-auto p-6 grid grid-cols-12 gap-6">
+<!-- Left Column: Map Visualizer -->
+<div class="col-span-12 lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+<div class="glass-panel rounded-xl overflow-hidden relative min-h-[500px] group">
+<!-- Map Placeholder -->
+<div class="absolute inset-0 z-0">
+<img alt="Satellite view of residential roof with solar panels" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Satellite view of residential rooftop with solar panel layout" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTe0IEeWHxL__BhEQAn0V_6-gmv6Zo4-Ht2c1CJQxPhMlTl17yBosrmtuundepVSJPa14d5wZV53L82rxCmIFO0290i2jerBGIlQS52f0lzFZVBlPfx7rxblVii1fU-6ZLKl_DLjNKAJlLK1TAlfCpBwASngwDd0guoMwWptCZnIe9kL_5razdXNnqf9MvcGLgpA9uAQgAFbCRv0Z6PXUODifxInSYrkGAS-gSzIpcjeeKNijfqjSdQeu87yWHfvbGkGtkB1Bf0II"/>
+<!-- AI Overlay Simulation -->
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent"></div>
+<!-- Panel Grid Visualization (SVG Overlay) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-80" viewbox="0 0 800 500">
+<path d="M350,150 L550,220 L500,320 L300,250 Z" fill="rgba(19, 236, 91, 0.2)" stroke="#13ec5b" stroke-width="2"></path>
+<rect fill="#13ec5b" height="35" opacity="0.6" transform="rotate(20 360 165)" width="20" x="360" y="165"></rect>
+<rect fill="#13ec5b" height="35" opacity="0.6" transform="rotate(20 390 175)" width="20" x="390" y="175"></rect>
+<rect fill="#13ec5b" height="35" opacity="0.6" transform="rotate(20 420 185)" width="20" x="420" y="185"></rect>
+<rect fill="#13ec5b" height="35" opacity="0.6" transform="rotate(20 370 210)" width="20" x="370" y="210"></rect>
+<rect fill="#13ec5b" height="35" opacity="0.6" transform="rotate(20 400 220)" width="20" x="400" y="220"></rect>
+</svg>
+</div>
+<div class="relative z-10 p-6 h-full flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="bg-background-dark/90 backdrop-blur-md p-4 rounded-lg border border-border-dark inline-block">
+<p class="text-xs text-slate-400 uppercase font-bold mb-1">AI Confidence Score</p>
+<div class="flex items-center gap-3">
+<span class="text-3xl font-bold text-primary">98.2%</span>
+<div class="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[98%]"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="bg-background-dark/90 p-2 rounded-lg border border-border-dark hover:text-primary transition-colors">
+<span class="material-icons">3d_rotation</span>
+</button>
+<button class="bg-background-dark/90 p-2 rounded-lg border border-border-dark hover:text-primary transition-colors">
+<span class="material-icons">layers</span>
+</button>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<div class="bg-background-dark/90 backdrop-blur-md p-4 rounded-lg border border-border-dark flex gap-8">
+<div>
+<p class="text-xs text-slate-400 uppercase font-bold">Roof Azimuth</p>
+<p class="text-xl font-bold">195° (South)</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase font-bold">Roof Tilt</p>
+<p class="text-xl font-bold">32°</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase font-bold">Shading Factor</p>
+<p class="text-xl font-bold text-primary">Low (4%)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Financial Analysis Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- ROI Chart -->
+<div class="glass-panel p-6 rounded-xl">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-lg">Cumulative Savings (25Y)</h3>
+<span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">PROJECTION</span>
+</div>
+<div class="h-48 flex items-end gap-2 mb-4">
+<div class="w-1/12 bg-primary/20 h-[10%] rounded-t"></div>
+<div class="w-1/12 bg-primary/25 h-[15%] rounded-t"></div>
+<div class="w-1/12 bg-primary/30 h-[22%] rounded-t"></div>
+<div class="w-1/12 bg-primary/35 h-[30%] rounded-t"></div>
+<div class="w-1/12 bg-primary/40 h-[40%] rounded-t"></div>
+<div class="w-1/12 bg-primary/50 h-[52%] rounded-t"></div>
+<div class="w-1/12 bg-primary/60 h-[65%] rounded-t"></div>
+<div class="w-1/12 bg-primary/70 h-[78%] rounded-t"></div>
+<div class="w-1/12 bg-primary/80 h-[88%] rounded-t"></div>
+<div class="w-1/12 bg-primary/90 h-[95%] rounded-t"></div>
+<div class="w-1/12 bg-primary h-full rounded-t"></div>
+<div class="w-1/12 bg-primary h-full rounded-t"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 font-bold">
+<span>YEAR 0</span>
+<span>YEAR 12</span>
+<span>YEAR 25</span>
+</div>
+<div class="mt-4 pt-4 border-t border-border-dark flex justify-between items-center">
+<span class="text-sm text-slate-400">Total Net Benefit</span>
+<span class="text-xl font-bold text-primary">+$42,850</span>
+</div>
+</div>
+<!-- Payback Period -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-lg mb-4">Financial Payback</h3>
+<div class="relative w-40 h-40 mx-auto">
+<!-- Circular Progress Simulation -->
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="transparent" r="45" stroke="rgba(255,255,255,0.05)" stroke-width="8"></circle>
+<circle cx="50" cy="50" fill="transparent" r="45" stroke="#13ec5b" stroke-dasharray="212" stroke-dashoffset="70" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="text-4xl font-bold">5.8</span>
+<span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Years</span>
+</div>
+</div>
+</div>
+<div class="mt-6 space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-slate-400">Internal Rate of Return (IRR)</span>
+<span class="font-bold">14.2%</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-slate-400">ROI Ratio</span>
+<span class="font-bold">3.8x</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Stats & Actions -->
+<div class="col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+<!-- Core Metrics -->
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-panel p-5 rounded-xl border-l-4 border-l-primary">
+<p class="text-xs text-slate-400 font-bold uppercase mb-1">Max Panels</p>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">24</span>
+<span class="text-xs text-primary font-medium mb-1">Units</span>
+</div>
+</div>
+<div class="glass-panel p-5 rounded-xl border-l-4 border-l-primary">
+<p class="text-xs text-slate-400 font-bold uppercase mb-1">System Capacity</p>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">10.8</span>
+<span class="text-xs text-primary font-medium mb-1">kW</span>
+</div>
+</div>
+<div class="glass-panel p-5 rounded-xl bg-primary/5">
+<p class="text-xs text-slate-400 font-bold uppercase mb-1">Annual Yield</p>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">14,250</span>
+<span class="text-xs text-primary font-medium mb-1">kWh</span>
+</div>
+</div>
+<div class="glass-panel p-5 rounded-xl bg-primary/5">
+<p class="text-xs text-slate-400 font-bold uppercase mb-1">Grid Independence</p>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">82</span>
+<span class="text-xs text-primary font-medium mb-1">%</span>
+</div>
+</div>
+</div>
+<!-- Environmental Impact -->
+<div class="glass-panel p-6 rounded-xl bg-gradient-to-br from-neutral-dark to-background-dark border border-primary/20">
+<h3 class="font-bold text-lg mb-6 flex items-center gap-2">
+<span class="material-icons text-primary">eco</span>
+                    Environmental Impact
+                </h3>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+<span class="material-icons text-primary">park</span>
+</div>
+<div>
+<p class="text-2xl font-bold">245</p>
+<p class="text-xs text-slate-400 font-bold uppercase">Equivalent Trees Planted</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+<span class="material-icons text-primary">co2</span>
+</div>
+<div>
+<p class="text-2xl font-bold">8.4 Tons</p>
+<p class="text-xs text-slate-400 font-bold uppercase">Annual CO2 Reduced</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+<span class="material-icons text-primary">directions_car</span>
+</div>
+<div>
+<p class="text-2xl font-bold">21,000</p>
+<p class="text-xs text-slate-400 font-bold uppercase">Miles Driven Avoided</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Cost Breakdown -->
+<div class="glass-panel p-6 rounded-xl flex-grow">
+<h3 class="font-bold text-lg mb-4">Investment Summary</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-slate-400">Gross System Cost</span>
+<span class="font-bold font-mono">$24,500</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-slate-400">Federal Tax Credit (30%)</span>
+<span class="font-bold text-primary font-mono">-$7,350</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-slate-400">Local Utility Rebate</span>
+<span class="font-bold text-primary font-mono">-$1,200</span>
+</div>
+<div class="pt-4 border-t border-border-dark flex justify-between items-center">
+<span class="font-bold">Net System Cost</span>
+<span class="text-2xl font-bold font-mono">$15,950</span>
+</div>
+</div>
+<div class="mt-8">
+<button class="w-full bg-primary py-4 rounded-xl text-background-dark font-bold hover:shadow-[0_0_20px_rgba(19,236,91,0.3)] transition-all flex items-center justify-center gap-2">
+                        GET QUOTES FROM INSTALLERS
+                        <span class="material-icons">chevron_right</span>
+</button>
+<p class="text-[10px] text-center text-slate-500 mt-4 uppercase tracking-widest font-bold">Prices based on local market averages</p>
+</div>
+</div>
+</div>
+<!-- Footer Stats Bar -->
+<div class="col-span-12 glass-panel p-4 rounded-xl flex flex-wrap items-center justify-between gap-6 border-t-4 border-t-primary">
+<div class="flex items-center gap-4">
+<span class="text-slate-400 font-bold text-xs uppercase">Data Source</span>
+<div class="flex items-center gap-2">
+<span class="material-icons text-sm text-primary">satellite_alt</span>
+<span class="text-sm font-medium">Sentinel-2 High-Res</span>
+</div>
+<div class="w-px h-4 bg-border-dark"></div>
+<div class="flex items-center gap-2">
+<span class="material-icons text-sm text-primary">update</span>
+<span class="text-sm font-medium">Last Scan: Oct 12, 2023</span>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+<span class="text-xs font-bold uppercase tracking-widest text-primary">System Online</span>
+</div>
+<div class="flex gap-4">
+<span class="material-icons text-slate-400 cursor-pointer hover:text-white transition-colors">share</span>
+<span class="material-icons text-slate-400 cursor-pointer hover:text-white transition-colors">print</span>
+<span class="material-icons text-slate-400 cursor-pointer hover:text-white transition-colors">help_outline</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>
