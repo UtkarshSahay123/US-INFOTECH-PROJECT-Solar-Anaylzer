@@ -1,18 +1,19 @@
-# ☀️ SolarPulse (Solar Analyzer)
+# ☀️ SolarPulse (Solar Analyzer) — Production Ready 🚀
 
 **SolarPulse** is a full-stack, AI-powered platform for assessing solar panel feasibility. By utilizing computer vision (YOLOv8) to analyze rooftop imagery, calculating highly accurate solar potential, and tracking historical analyses using a robust Spring Boot backend, SolarPulse empowers seamless green energy planning.
 
 ---
 
-## 🏗️ Architecture Stack
+## 🏗️ Production Architecture (Cloud Deployed)
 
-The project operates through a secure 3-tier microservice architecture:
+The platform is now fully hosted and available globally:
 
-| Tier | Path | Tech Stack | Port | Purpose |
-|------|------|------------|------|---------|
-| **1. Frontend Interface** | `\stitch\stitch` | HTML5, Tailwind CSS, Vanilla JS | `5500` (Live Server) | UI/UX, Dynamic rendering, Form state |
-| **2. Auth & Data Backend**| `\stitch\authentication\authentication\demo` | Java 17, Spring Boot, Spring Security, PostgreSQL | `8080` | JWT Auth, OAuth2 (Google/MS), Data Persistence, OTP Emails |
-| **3. ML & Vision Engine** | `\ml_engine` | Python 3, FastAPI, YOLOv8 (Ultralytics), OpenCV | `8000` | Image Segmentation, Area calculation, Weather data integration |
+| Tier | Hosting Provider | Tech Stack | Live Status |
+|------|------------------|------------|-------------|
+| **1. Frontend Interface** | **Vercel** | HTML5, Tailwind CSS, Vanilla JS | [Live on Vercel](https://us-infotech-project-solar-anaylzer.vercel.app) |
+| **2. Auth & Data Backend**| **Render (Docker)** | Java 17, Spring Boot, Spring Security | [Backend API](https://us-infotech-project-solar-anaylzer.onrender.com) |
+| **3. ML & Vision Engine** | **Render (Python)** | Python 3, FastAPI, YOLOv8, OpenCV | [ML Engine](https://solarpulse-ml-engine.onrender.com) |
+| **4. Cloud Database** | **Neon** | Serverless PostgreSQL | Connected (Production) |
 
 ---
 
@@ -29,74 +30,72 @@ The project operates through a secure 3-tier microservice architecture:
 
 ---
 
-## 🚀 How to Run the Project Locally
+## 🔧 Production Environment Setup
 
-Because the project relies on microservices, you **must run all 3 servers simultaneously** for the application to function.
+The production services are configured via **Environment Variables** on Render. Do not store these in the repository:
+
+### Backend (Render)
+- `SPRING_DATASOURCE_URL`: JDBC Pooler Link from Neon.
+- `SPRING_DATASOURCE_USERNAME`: Neon DB Username.
+- `SPRING_DATASOURCE_PASSWORD`: Neon DB Password.
+- `JWT_SECRET`: Secure 256-bit key for session signing.
+- `EMAIL_USER` / `EMAIL_PASS`: Gmail App Credentials for OTP.
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`: Google OAuth2 credentials.
+- `MS_CLIENT_ID` / `MS_CLIENT_SECRET`: Microsoft Azure Portal credentials.
+
+### ML Engine (Render)
+- **Root Directory**: `ml_engine`
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port 10000`
+
+---
+
+## 🚀 Local Development Setup
+
+If you wish to run this project locally, ensure you have Java 17, Python 3.10+, and PostgreSQL installed.
 
 ### 1. Database Setup
-Ensure **PostgreSQL** is running on your machine on port `5432`.
-- Username: `postgres`
-- Password: `root`
-- Database Name: `solar_analyzer_auth` *(Spring Boot will automatically create tables inside it)*
+Create a database named `solar_analyzer_auth` in your local PostgreSQL.
 
-### 2. Start the Auth & Data Backend (Spring Boot)
-This server handles logins, saves data, and issues tokens.
-1. Open a terminal and navigate to the backend folder:
-   ```bash
-   cd "e:\solar anlyzer\stitch\authentication\authentication\demo"
-   ```
-2. Start the server using Maven:
-   ```bash
-   .\mvnw.cmd spring-boot:run
-   ```
-   *Expect to see: `Started SolarAnalyzerAuthenticationApplication` on port `8080`.*
-
-### 3. Start the ML Engine (Python FastAPI)
-This server processes images and computes formulas.
-1. Open a **second** terminal and navigate to the python folder:
-   ```bash
-   cd "e:\solar anlyzer\ml_engine"
-   ```
-2. Activate the virtual environment:
-   ```bash
-   .\venv\Scripts\activate
-   ```
-3. Start the Uvicorn server:
-   ```bash
-   uvicorn main:app --reload
-   ```
-   *Expect to see: `Uvicorn running on http://127.0.0.1:8000`.*
-
-### 4. Start the Frontend (UI)
-The frontend communicates with both the `:8000` and `:8080` servers.
-1. Open **VS Code**.
-2. Open the frontend folder: `e:\solar anlyzer\stitch\stitch`
-3. Right-click on `index.html` and select **"Open with Live Server"**.
-4. The application will launch in your browser (usually at `http://localhost:5500/index.html`).
-
----
-
-## 🔧 Environment Configuration
-
-If you deploy this to production or switch machines, update the secrets in:
-`e:\solar anlyzer\stitch\authentication\authentication\demo\src\main\resources\application.properties`
-
-- **Database Credentials**: `spring.datasource.username` / `password`
-- **Email OTP Senders**: `spring.mail.username` / `password` (Requires Gmail App Password)
-- **OAuth2 Secrets**: `spring.security.oauth2.client.registration...client-secret`
-
----
-
-## 🛠️ Troubleshooting
-
-**1. "Port 8080 was already in use"**
-A ghost Spring Boot process is stuck in the background. Kill it via PowerShell:
-```powershell
-Get-Process -Id (Get-NetTCPConnection -LocalPort 8080).OwningProcess | Stop-Process -Force
+### 2. Start Backend
+```bash
+cd stitch/authentication/authentication/demo
+./mvnw spring-boot:run
 ```
 
-**2. 401 Unauthorized Error on Dashboard Save**
-Ensure you aren't manually browsing to the `user_dashboard.html` without logging in. Let `final_login_page.html` redirect you properly so it can store the JWT token correctly.
+### 3. Start ML Engine
+```bash
+cd ml_engine
+python -m venv venv
+source venv/bin/activate  # Or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+*Note: The `venv/` folder is excluded from Git to keep the repository lightweight.*
 
-**3. "No such option: --reload." in Python Uvicorn**
-Verify you do not have a trailing period. The correct command is: `uvicorn main:app --reload` (no grammar at the end).
+### 4. Start Frontend
+Open `stitch/stitch/index.html` using **Live Server** in VS Code.
+
+---
+
+## 🛠️ Repository Optimization
+To ensure fast deployments on Render and Vercel:
+- **`.gitignore`** is configured to exclude large Python virtual environments (`venv/`) and binary models.
+- **Docker** is used for the Backend deployment to ensure environment consistency.
+- **Vercel** is configured with the Root Directory as `stitch/stitch`.
+
+---
+
+## 📝 Troubleshooting & Maintenance
+
+**1. Vercel "Cannot connect to backend"**
+Ensure that the `final_login_page.html` and `user_dashboard.html` files on GitHub have the correct `onrender.com` URLs instead of `localhost`.
+
+**2. ML Engine Build Errors**
+If `requirements.txt` is not found, verify that the **Root Directory** in Render is set specifically to `ml_engine`.
+
+**3. Neon Database Idle**
+Neon databases may pause after 5 minutes of inactivity. The first request from the website might take 10-15 seconds to "wake up" the database.
+
+---
+© 2026 SolarPulse Team | Built with ❤️ for Green Energy.
