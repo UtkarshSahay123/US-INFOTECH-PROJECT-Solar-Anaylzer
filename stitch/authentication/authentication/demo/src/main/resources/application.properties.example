@@ -1,13 +1,19 @@
 spring.application.name=solar_analyzer_authentication
-spring.datasource.url=jdbc:postgresql://${DB_HOST}/${DB_NAME}?sslmode=require
-spring.datasource.username=${DB_USER}
-spring.datasource.password=${DB_PASSWORD}
+
+# Use Standard Spring Boot Environment Variables (Render maps these automatically)
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
 jwt.secret=${JWT_SECRET}
-jwt.expiration=86400000
+jwt.expiration=${JWT_EXPIRATION:86400000}
+
+# OAuth2 - Use defaults or env vars
 spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
 spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
 
@@ -24,7 +30,7 @@ spring.security.oauth2.client.provider.microsoft.jwk-set-uri=https://login.micro
 spring.security.oauth2.client.provider.microsoft.user-info-uri=https://graph.microsoft.com/oidc/userinfo
 spring.security.oauth2.client.provider.microsoft.user-name-attribute=sub
 
-# Email SMTP Configuration for OTP
+# Email SMTP
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
 spring.mail.username=${EMAIL_USER}
