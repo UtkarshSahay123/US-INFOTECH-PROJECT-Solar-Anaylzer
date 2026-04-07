@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/auth-api/:path*",
+      "destination": "https://us-infotech-project-solar-anaylzer.onrender.com/:path*"
+    },
+    {
+      "source": "/ml-api/:path*",
+      "destination": "https://solarpulse-ml-engine.onrender.com/:path*"
+    }
+  ]
+}
