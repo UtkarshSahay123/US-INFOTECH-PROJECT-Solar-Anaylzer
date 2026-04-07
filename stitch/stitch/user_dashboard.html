@@ -553,7 +553,7 @@
         const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (token) {
             try {
-                const response = await fetch('https://us-infotech-project-solar-anaylzer.onrender.com/api/dashboard/history', {
+                const response = await fetch('/auth-api/api/dashboard/history', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 if (response.ok) {
@@ -583,7 +583,7 @@
         const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (token) {
             try {
-                const res = await fetch('https://us-infotech-project-solar-anaylzer.onrender.com/api/dashboard/save', {
+                const res = await fetch('/auth-api/api/dashboard/save', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(window.currentFlatData)
@@ -664,7 +664,7 @@
                     formData.append('panel_length_m', len);
                     formData.append('panel_width_m', wid);
 
-                    const response = await fetch('https://solarpulse-ml-engine.onrender.com/analyze', { method: 'POST', body: formData });
+                    const response = await fetch('/ml-api/analyze', { method: 'POST', body: formData });
                     
                     loaders.forEach(clearTimeout);
 
@@ -951,7 +951,7 @@
         const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (token) {
             try {
-                const res = await fetch(`https://us-infotech-project-solar-anaylzer.onrender.com/api/dashboard/history/${id}`, {
+               const res = await fetch(\/auth-api/api/dashboard/history/${id}`, {`
                     method: 'DELETE',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
