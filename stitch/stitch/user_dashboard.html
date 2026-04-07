@@ -583,7 +583,7 @@
         const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (token) {
             try {
-                const res = await fetch('http://localhost:8080/api/dashboard/save', {
+                const res = await fetch('https://us-infotech-project-solar-anaylzer.onrender.com/api/dashboard/save', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(window.currentFlatData)
@@ -951,7 +951,7 @@
         const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (token) {
             try {
-                const res = await fetch(`http://localhost:8080/api/dashboard/history/${id}`, {
+                const res = await fetch(`https://us-infotech-project-solar-anaylzer.onrender.com/api/dashboard/history/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
