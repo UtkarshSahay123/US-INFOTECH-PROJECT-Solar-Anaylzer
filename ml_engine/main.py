@@ -1,6 +1,6 @@
 import uvicorn
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from services.geo_weather import get_weather_sunrise_sunset
 from services.location_electricity import get_electricity_rate
@@ -13,12 +13,11 @@ app = FastAPI(title="Solar Analyzer ML Engine")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
-from fastapi.responses import JSONResponse
+
 
 # Simple in-memory rate limiting dict (IP -> [timestamps])
 # In a multi-worker production environment, this would be Redis.
