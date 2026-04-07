@@ -1,8 +1,11 @@
 fastapi
 uvicorn
 ultralytics
-opencv-python
+opencv-python-headless
 requests
 numpy
 python-dotenv
 python-multipart
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
