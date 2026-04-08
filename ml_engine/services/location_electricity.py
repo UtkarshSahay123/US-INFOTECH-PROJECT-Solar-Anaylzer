@@ -132,7 +132,7 @@ def get_electricity_rate(lat: float, lon: float) -> dict:
         return cached_data
 
     try:
-        headers = {"User-Agent": "SolarPulse-Analyzer/1.0"}
+        headers = {"User-Agent": "SolarPulse-Analyzer/1.0 (utkarsh.sahay@example.com)"}
         url = (
             f"https://nominatim.openstreetmap.org/reverse"
             f"?lat={lat}&lon={lon}&format=json&addressdetails=1"

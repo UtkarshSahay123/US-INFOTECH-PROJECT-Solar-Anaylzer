@@ -8,6 +8,8 @@ from PIL import Image
 # Note: For production, we'd use a custom model trained for roofs and panels like `yolov8-roof-seg.pt`
 # Here we'll load the base yolov8n-seg.pt to demonstrate the architecture. It will download the file automatically.
 try:
+    import torch
+    torch.set_num_threads(1)  # Extreme memory optimization for Render free tier!
     model = YOLO("yolov8n-seg.pt")
 except Exception as e:
     model = None
