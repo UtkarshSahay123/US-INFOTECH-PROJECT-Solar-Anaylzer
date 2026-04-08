@@ -118,7 +118,14 @@ DEFAULT_CURRENCY = {"currency_code": "USD", "currency_symbol": "$"}
 
 from utils.cache import geo_cache
 
-def get_electricity_rate(lat: float, lon: float, user_country: str = "", user_state: str = "", user_city: str = "") -> dict:
+def get_electricity_rate(
+    lat: float,
+    lon: float,
+    user_country: str = "",
+    user_state: str = "",
+    user_city: str = "",
+    user_country_code: str = "",
+) -> dict:
     """
     Reverse-geocode GPS coordinates via Nominatim (OpenStreetMap, no API key).
     Returns local electricity rate in LOCAL CURRENCY per kWh + currency metadata.
@@ -132,9 +139,26 @@ def get_electricity_rate(lat: float, lon: float, user_country: str = "", user_st
         return cached_data
 
     try:
-        if user_country and user_state:
+        if user_country:
             # Bypass BigDataCloud entirely if the front-end successfully fetched it (bypassing Render datacenter blocks)
-            country_code = "IN" if "india" in user_country.lower() else "XX"
+            country_code = (user_country_code or "").strip().upper()
+            if not country_code:
+                lowered_country = user_country.lower().strip()
+                for code, info in COUNTRY_RATES.items():
+                    if lowered_country == code.lower():
+                        country_code = code
+                        break
+                    if lowered_country in {
+                        "united states",
+                        "united states of america",
+                    } and code == "US":
+                        country_code = "US"
+                        break
+                    if lowered_country in {"united kingdom", "great britain"} and code == "GB":
+                        country_code = "GB"
+                        break
+                if not country_code:
+                    country_code = "XX"
             country_name = user_country
             state        = user_state.lower()
             city         = user_city

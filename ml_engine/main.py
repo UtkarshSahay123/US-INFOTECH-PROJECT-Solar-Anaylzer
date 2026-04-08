@@ -68,6 +68,7 @@ async def analyze_solar_opportunity(
     panel_width_m: float = Form(1.0),
     gsd_m_px: float = Form(None),
     user_country: str = Form(""),
+    user_country_code: str = Form(""),
     user_state: str = Form(""),
     user_city: str = Form(""),
     weather_temp: float = Form(None),
@@ -92,7 +93,14 @@ async def analyze_solar_opportunity(
         )
 
         # Step 3: Fetch local electricity rate using GPS reverse geocoding
-        electricity_info = get_electricity_rate(latitude, longitude, user_country, user_state, user_city)
+        electricity_info = get_electricity_rate(
+            latitude,
+            longitude,
+            user_country,
+            user_state,
+            user_city,
+            user_country_code,
+        )
 
         # Step 4: Calculate with all corrections + local currency
         result = calculate_energy_and_profit(
