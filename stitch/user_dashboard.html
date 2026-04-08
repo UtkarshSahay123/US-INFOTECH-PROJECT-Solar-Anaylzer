@@ -1116,8 +1116,7 @@
         return symbols[code] || (code + ' ');
     }
 
-    function getSolarAssistantReply(questionRaw) {
-        const question = (questionRaw || '').toLowerCase().trim();
+    function getContextSnapshot() {
         const len = parseFloat(inputPanelLen?.value) || 2.0;
         const wid = parseFloat(inputPanelWid?.value) || 1.0;
         const panelArea = len * wid;
@@ -1125,6 +1124,48 @@
         const maxPanels = window.currentFlatData?.maxPanels || null;
         const currencyCode = window.currentFlatData?.currencyCode || baseCurrencyCode || 'USD';
         const currencySymbol = window.currentFlatData?.currencySymbol || getCurrencySymbol(currencyCode);
+        return { len, wid, panelArea, area, maxPanels, currencyCode, currencySymbol };
+    }
+
+    async function fetchLiveSolarAnswer(question, context) {
+        const q = encodeURIComponent(`${question} solar panel`);
+        try {
+            const ddgRes = await fetch(`https://api.duckduckgo.com/?q=${q}&format=json&no_html=1&skip_disambig=1`);
+            if (ddgRes.ok) {
+                const ddg = await ddgRes.json();
+                const text = ddg.AbstractText || ddg.Answer || ddg.Definition || ddg?.RelatedTopics?.[0]?.Text || '';
+                if (text && text.length > 30) {
+                    return `${text} (General web knowledge)`;
+                }
+            }
+        } catch (e) {}
+
+        try {
+            const searchRes = await fetch(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(question + " solar panel")}&limit=1&namespace=0&format=json&origin=*`);
+            if (searchRes.ok) {
+                const searchData = await searchRes.json();
+                const title = searchData?.[1]?.[0];
+                if (title) {
+                    const summaryRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+                    if (summaryRes.ok) {
+                        const summary = await summaryRes.json();
+                        if (summary?.extract) {
+                            return `${summary.extract.slice(0, 520)}${summary.extract.length > 520 ? '...' : ''} (Source: Wikipedia)`;
+                        }
+                    }
+                }
+            }
+        } catch (e) {}
+
+        return `I could not find a reliable live source right now. From your current setup (${context.len}m × ${context.wid}m panels, currency ${context.currencyCode}), ask me a specific query like:
+1) "best panel type for home in hot climate"
+2) "panel price per watt in my country"
+3) "how many panels for 5kW system"`;
+    }
+
+    async function getSolarAssistantReply(questionRaw) {
+        const question = (questionRaw || '').toLowerCase().trim();
+        const { len, wid, panelArea, area, maxPanels, currencyCode, currencySymbol } = getContextSnapshot();
 
         if (!question) return "Please type your question. You can ask about panel size, panel count, energy, or panel pricing.";
 
@@ -1158,18 +1199,42 @@
             return "Monocrystalline panels are usually the best default for residential rooftops due to higher efficiency and better space use. Polycrystalline can be cheaper but usually needs more area for the same power.";
         }
 
-        return "I can help with panel count, panel dimensions, expected savings, and approximate market prices. Try asking: 'How many panels can fit?', 'What panel size should I use?', or 'What is current panel rate?'";
+        return await fetchLiveSolarAnswer(questionRaw, { len, wid, panelArea, area, maxPanels, currencyCode, currencySymbol });
     }
 
-    function handleSolarChatSubmit(fromVoice = false) {
+    async function handleSolarChatSubmit(fromVoice = false) {
         const text = solarChatInput.value.trim();
         if (!text) return;
         addSolarChatMessage('user', text);
-        const reply = getSolarAssistantReply(text);
-        setTimeout(() => {
-            addSolarChatMessage('bot', reply);
+        addSolarChatMessage('bot', 'Thinking...');
+        try {
+            const reply = await getSolarAssistantReply(text);
+            const bubbles = solarChatMessages.querySelectorAll('div > div');
+            if (bubbles.length) {
+                const lastBubble = bubbles[bubbles.length - 1];
+                if (lastBubble && lastBubble.textContent === 'Thinking...') {
+                    lastBubble.textContent = reply;
+                } else {
+                    addSolarChatMessage('bot', reply);
+                }
+            } else {
+                addSolarChatMessage('bot', reply);
+            }
             if (fromVoice || solarVoiceReplyEnabled) speakSolarReply(reply);
-        }, 180);
+        } catch (e) {
+            const errMsg = 'I hit a temporary error while fetching live knowledge. Please try again.';
+            const bubbles = solarChatMessages.querySelectorAll('div > div');
+            if (bubbles.length) {
+                const lastBubble = bubbles[bubbles.length - 1];
+                if (lastBubble && lastBubble.textContent === 'Thinking...') {
+                    lastBubble.textContent = errMsg;
+                } else {
+                    addSolarChatMessage('bot', errMsg);
+                }
+            } else {
+                addSolarChatMessage('bot', errMsg);
+            }
+        }
         solarChatInput.value = '';
     }
 
