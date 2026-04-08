@@ -66,7 +66,16 @@ async def analyze_solar_opportunity(
     longitude: float = Form(...),
     panel_length_m: float = Form(2.0),
     panel_width_m: float = Form(1.0),
-    gsd_m_px: float = Form(None)
+    gsd_m_px: float = Form(None),
+    user_country: str = Form(""),
+    user_state: str = Form(""),
+    user_city: str = Form(""),
+    weather_temp: float = Form(None),
+    weather_wind: float = Form(None),
+    weather_code: int = Form(None),
+    weather_sunrise: str = Form(""),
+    weather_sunset: str = Form(""),
+    weather_radiation: float = Form(None)
 ):
     try:
         # Read the image
@@ -76,10 +85,14 @@ async def analyze_solar_opportunity(
         area_m2 = detect_solar_area(img_bytes, gsd_m_px)
 
         # Step 2: Fetch weather + solar radiation data from Open-Meteo
-        weather_data = get_weather_sunrise_sunset(latitude, longitude)
+        weather_data = get_weather_sunrise_sunset(
+            latitude, longitude,
+            weather_temp, weather_wind, weather_code,
+            weather_sunrise, weather_sunset, weather_radiation
+        )
 
         # Step 3: Fetch local electricity rate using GPS reverse geocoding
-        electricity_info = get_electricity_rate(latitude, longitude)
+        electricity_info = get_electricity_rate(latitude, longitude, user_country, user_state, user_city)
 
         # Step 4: Calculate with all corrections + local currency
         result = calculate_energy_and_profit(

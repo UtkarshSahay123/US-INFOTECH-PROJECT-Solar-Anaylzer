@@ -2,7 +2,12 @@ import requests
 from datetime import datetime
 from utils.cache import weather_cache
 
-def get_weather_sunrise_sunset(lat: float, lon: float) -> dict:
+def get_weather_sunrise_sunset(
+    lat: float, lon: float, 
+    frontend_temp: float = None, frontend_wind: float = None, 
+    frontend_code: int = None, frontend_sunrise: str = "", 
+    frontend_sunset: str = "", frontend_radiation: float = None
+) -> dict:
     """
     Fetches real-time weather, solar radiation, sunrise, and sunset times
     from Open-Meteo for the given coordinates. Uses a 1-hour TTL cache.
@@ -13,6 +18,19 @@ def get_weather_sunrise_sunset(lat: float, lon: float) -> dict:
     cached_data = weather_cache.get(cache_key)
     if cached_data:
         return cached_data
+
+    # Bypass Open-Meteo backend check if the frontend successfully fetched and provided it
+    if frontend_sunrise and frontend_sunset and frontend_temp is not None:
+        result = {
+            "temperature_celsius": frontend_temp,
+            "windspeed_kmh": frontend_wind or 0.0,
+            "weather_code": frontend_code or 0,
+            "sunrise": frontend_sunrise,
+            "sunset": frontend_sunset,
+            "daily_radiation_mj_m2": frontend_radiation or 20.5
+        }
+        weather_cache.set(cache_key, result)
+        return result
 
     # Using Open-Meteo for free weather data (no API key required)
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=sunrise,sunset,uv_index_max,shortwave_radiation_sum&current_weather=true&timezone=auto"

@@ -664,6 +664,40 @@
                     formData.append('panel_length_m', len);
                     formData.append('panel_width_m', wid);
 
+                    // --- NEW: Client-side Geocoding Bypass ---
+                    // Since Render IPs are blocked by OpenStreetMap and BigDataCloud,
+                    // we fetch the user's location directly from their unblocked browser!
+                    try {
+                        const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`;
+                        const geoRes = await fetch(geoUrl);
+                        const geoData = await geoRes.json();
+                        if (geoData.countryName) formData.append('user_country', geoData.countryName);
+                        if (geoData.principalSubdivision) formData.append('user_state', geoData.principalSubdivision);
+                        if (geoData.locality) formData.append('user_city', geoData.locality);
+                    } catch(e) {
+                         console.warn("Client geocoding also failed", e);
+                    }
+
+                    // --- NEW: Client-side Weather Bypass ---
+                    try {
+                        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&daily=sunrise,sunset,shortwave_radiation_sum&current_weather=true&timezone=auto`;
+                        const weatherRes = await fetch(weatherUrl);
+                        const weatherData = await weatherRes.json();
+                        if (weatherData.current_weather) {
+                            formData.append('weather_temp', weatherData.current_weather.temperature);
+                            formData.append('weather_wind', weatherData.current_weather.windspeed);
+                            formData.append('weather_code', weatherData.current_weather.weathercode);
+                        }
+                        if (weatherData.daily) {
+                            if (weatherData.daily.sunrise) formData.append('weather_sunrise', weatherData.daily.sunrise[0]);
+                            if (weatherData.daily.sunset) formData.append('weather_sunset', weatherData.daily.sunset[0]);
+                            if (weatherData.daily.shortwave_radiation_sum) formData.append('weather_radiation', weatherData.daily.shortwave_radiation_sum[0]);
+                        }
+                    } catch(e) {
+                         console.warn("Client weather also failed", e);
+                    }
+                    // -----------------------------------------
+
                     const response = await fetch('https://solarpulse-ml-engine.onrender.com/analyze', { method: 'POST', body: formData });
                     
                     loaders.forEach(clearTimeout);

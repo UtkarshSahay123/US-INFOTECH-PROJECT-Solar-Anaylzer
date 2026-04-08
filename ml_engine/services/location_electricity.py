@@ -118,7 +118,7 @@ DEFAULT_CURRENCY = {"currency_code": "USD", "currency_symbol": "$"}
 
 from utils.cache import geo_cache
 
-def get_electricity_rate(lat: float, lon: float) -> dict:
+def get_electricity_rate(lat: float, lon: float, user_country: str = "", user_state: str = "", user_city: str = "") -> dict:
     """
     Reverse-geocode GPS coordinates via Nominatim (OpenStreetMap, no API key).
     Returns local electricity rate in LOCAL CURRENCY per kWh + currency metadata.
@@ -132,19 +132,26 @@ def get_electricity_rate(lat: float, lon: float) -> dict:
         return cached_data
 
     try:
-        headers = {"User-Agent": "SolarPulse-Analyzer/1.0 (utkarsh.sahay@example.com)"}
-        url = (
-            f"https://api.bigdatacloud.net/data/reverse-geocode-client"
-            f"?latitude={lat}&longitude={lon}&localityLanguage=en"
-        )
-        resp = requests.get(url, headers=headers, timeout=8)
-        resp.raise_for_status()
-        data = resp.json()
+        if user_country and user_state:
+            # Bypass BigDataCloud entirely if the front-end successfully fetched it (bypassing Render datacenter blocks)
+            country_code = "IN" if "india" in user_country.lower() else "XX"
+            country_name = user_country
+            state        = user_state.lower()
+            city         = user_city
+        else:
+            headers = {"User-Agent": "SolarPulse-Analyzer/1.0 (utkarsh.sahay@example.com)"}
+            url = (
+                f"https://api.bigdatacloud.net/data/reverse-geocode-client"
+                f"?latitude={lat}&longitude={lon}&localityLanguage=en"
+            )
+            resp = requests.get(url, headers=headers, timeout=8)
+            resp.raise_for_status()
+            data = resp.json()
 
-        country_code = data.get("countryCode", "").upper()
-        country_name = data.get("countryName", "Unknown")
-        state        = data.get("principalSubdivision", "").lower()
-        city         = data.get("locality", "")
+            country_code = data.get("countryCode", "").upper()
+            country_name = data.get("countryName", "Unknown")
+            state        = data.get("principalSubdivision", "").lower()
+            city         = data.get("locality", "")
 
         rate_info = COUNTRY_RATES.get(country_code, {})
         rate      = rate_info.get("default", DEFAULT_RATE)
