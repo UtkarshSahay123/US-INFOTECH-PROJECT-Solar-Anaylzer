@@ -310,6 +310,11 @@
                 </select>
             </div>
         </div>
+        <div class="w-full space-y-2 mb-2">
+            <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Pincode / ZIP Code (Optional)</label>
+            <input type="text" id="inputPostalCode" placeholder="e.g. 560001" class="w-full bg-surface-bright border border-primary/20 rounded-lg p-2 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+            <p class="text-[10px] text-slate-500">If GPS is blocked, we will use this to detect your area, country and local currency/rates.</p>
+        </div>
 
         <div class="flex gap-4 w-full">
             <button id="btnCamera" class="flex-1 flex flex-col items-center justify-center gap-2 bg-surface-bright hover:bg-primary/20 border border-primary/10 py-6 rounded-xl transition-colors">
@@ -448,6 +453,7 @@
     const inputPanelLen = document.getElementById('inputPanelLen');
     const inputPanelWid = document.getElementById('inputPanelWid');
     const inputPanelUnit = document.getElementById('inputPanelUnit');
+    const inputPostalCode = document.getElementById('inputPostalCode');
 
     const metricIrradiance = document.getElementById('metricIrradiance');
     const metricSunlight = document.getElementById('metricSunlight');
@@ -656,11 +662,31 @@
             ];
 
             try {
-                navigator.geolocation.getCurrentPosition(async (position) => {
+                const resolveLocationFromPostal = async (postalCode) => {
+                    const cleanPostal = String(postalCode || '').trim();
+                    if (!cleanPostal) return null;
+                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=1&postalcode=${encodeURIComponent(cleanPostal)}`;
+                    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    if (!res.ok) throw new Error('Postal lookup failed');
+                    const places = await res.json();
+                    if (!Array.isArray(places) || places.length === 0) throw new Error('No location found for this pincode');
+                    const place = places[0];
+                    const addr = place.address || {};
+                    return {
+                        latitude: parseFloat(place.lat),
+                        longitude: parseFloat(place.lon),
+                        country: addr.country || '',
+                        countryCode: (addr.country_code || '').toUpperCase(),
+                        state: addr.state || addr.region || '',
+                        city: addr.city || addr.town || addr.village || addr.hamlet || ''
+                    };
+                };
+
+                const processAnalysis = async (coords, prefilledGeo = null) => {
                     const formData = new FormData();
                     formData.append('image', file);
-                    formData.append('latitude', position.coords.latitude);
-                    formData.append('longitude', position.coords.longitude);
+                    formData.append('latitude', coords.latitude);
+                    formData.append('longitude', coords.longitude);
                     formData.append('panel_length_m', len);
                     formData.append('panel_width_m', wid);
                     
@@ -668,6 +694,25 @@
                     // Otherwise assume standard high-res satellite GSD (0.25 m/px)
                     if (file.name !== "desktop_snapshot.jpg" && file.name !== "camera_capture.jpg") {
                         formData.append('gsd_m_px', 0.25);
+                    }
+
+                    try {
+                        if (prefilledGeo) {
+                            if (prefilledGeo.country) formData.append('user_country', prefilledGeo.country);
+                            if (prefilledGeo.countryCode) formData.append('user_country_code', prefilledGeo.countryCode);
+                            if (prefilledGeo.state) formData.append('user_state', prefilledGeo.state);
+                            if (prefilledGeo.city) formData.append('user_city', prefilledGeo.city);
+                        } else {
+                            const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${coords.latitude}&longitude=${coords.longitude}&localityLanguage=en`;
+                            const geoRes = await fetch(geoUrl);
+                            const geoData = await geoRes.json();
+                            if (geoData.countryName) formData.append('user_country', geoData.countryName);
+                            if (geoData.countryCode) formData.append('user_country_code', String(geoData.countryCode).toUpperCase());
+                            if (geoData.principalSubdivision) formData.append('user_state', geoData.principalSubdivision);
+                            if (geoData.locality) formData.append('user_city', geoData.locality);
+                        }
+                    } catch(e) {
+                        console.warn("Client geocoding also failed", e);
                     }
 
                     const response = await fetch('/ml-api/analyze', { method: 'POST', body: formData });
@@ -712,9 +757,29 @@
 
                     window.currentFlatData = flatData;
                     renderResults(flatData, false);
-                }, (error) => {
-                    resultsContainer.innerHTML = `<h4 class="text-red-500 font-bold">Location Error</h4>`;
-                });
+                };
+
+                const postalCode = (inputPostalCode?.value || '').trim();
+                if (postalCode) {
+                    try {
+                        const postalLocation = await resolveLocationFromPostal(postalCode);
+                        await processAnalysis(
+                            { latitude: postalLocation.latitude, longitude: postalLocation.longitude },
+                            postalLocation
+                        );
+                    } catch (postalError) {
+                        resultsContainer.innerHTML = `<h4 class="text-red-500 font-bold">Invalid Pincode</h4><p class="text-sm">${postalError.message}</p>`;
+                    }
+                } else {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        await processAnalysis({
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        });
+                    }, () => {
+                        resultsContainer.innerHTML = `<h4 class="text-red-500 font-bold">Location Error</h4><p class="text-sm">Enable GPS or enter your pincode to continue.</p>`;
+                    });
+                }
             } catch (err) {
                 resultsContainer.innerHTML = `<h4 class="text-red-500 font-bold">Analysis Failed</h4><p class="text-sm">${err.message}</p>`;
             }
@@ -812,7 +877,7 @@
                         </ul>
                     </div>
                     <div class="mt-3 p-3 rounded-lg bg-eco-green/10 border border-eco-green/20">
-                        <p class="text-[10px] text-eco-green font-bold uppercase tracking-widest mb-1">⚡ Local Electricity Rate (GPS-detected)</p>
+                        <p class="text-[10px] text-eco-green font-bold uppercase tracking-widest mb-1">⚡ Local Electricity Rate (GPS/Pincode detected)</p>
                         <p class="text-sm text-white font-bold">${data.currencySymbol || '$'}${(data.electricityRateLocal ?? 0).toFixed(3)} / kWh
                             ${data.electricityCountry ? `<span class="text-slate-400 font-normal ml-2">— ${data.electricityState ? data.electricityState + ', ' : ''}${data.electricityCountry} (${data.currencyCode || 'USD'})</span>` : ''}
                         </p>
