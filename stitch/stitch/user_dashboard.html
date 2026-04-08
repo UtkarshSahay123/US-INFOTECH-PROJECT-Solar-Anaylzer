@@ -1154,6 +1154,15 @@
             return `Panel size is ${len}m × ${wid}m (${panelArea.toFixed(2)} m² each). Run one analysis image first and I will give a precise panel count.`;
         }
 
+        const asksPanelType =
+            question.includes('type of solar panel') ||
+            (question.includes('type') && question.includes('solar') && question.includes('panel')) ||
+            (question.includes('panel') && (question.includes('residential') || question.includes('house') || question.includes('home')) && question.includes('type'));
+
+        if (asksPanelType) {
+            return "For residential purposes, monocrystalline solar panels are generally preferred: they are more efficient, need less roof area for the same power, and perform better in low light. Polycrystalline panels are cheaper but larger for the same kW, so they work best when you have a lot of roof space and want to minimize upfront cost.";
+        }
+
         if (question.includes('panel size') || question.includes('dimension') || question.includes('which panel')) {
             return `Current configured panel dimensions are ${len}m × ${wid}m (${panelArea.toFixed(2)} m² each). For homes, common practical sizes are around 2.0m × 1.0m. If your roof has narrow spaces, try smaller width panels to increase fit flexibility.`;
         }
