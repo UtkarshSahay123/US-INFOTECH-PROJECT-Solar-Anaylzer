@@ -134,20 +134,17 @@ def get_electricity_rate(lat: float, lon: float) -> dict:
     try:
         headers = {"User-Agent": "SolarPulse-Analyzer/1.0 (utkarsh.sahay@example.com)"}
         url = (
-            f"https://nominatim.openstreetmap.org/reverse"
-            f"?lat={lat}&lon={lon}&format=json&addressdetails=1"
+            f"https://api.bigdatacloud.net/data/reverse-geocode-client"
+            f"?latitude={lat}&longitude={lon}&localityLanguage=en"
         )
         resp = requests.get(url, headers=headers, timeout=8)
         resp.raise_for_status()
         data = resp.json()
 
-        address      = data.get("address", {})
-        country_code = address.get("country_code", "").upper()
-        country_name = address.get("country", "Unknown")
-        state        = (
-            address.get("state") or address.get("province") or
-            address.get("region") or ""
-        ).lower()
+        country_code = data.get("countryCode", "").upper()
+        country_name = data.get("countryName", "Unknown")
+        state        = data.get("principalSubdivision", "").lower()
+        city         = data.get("locality", "")
 
         rate_info = COUNTRY_RATES.get(country_code, {})
         rate      = rate_info.get("default", DEFAULT_RATE)
@@ -166,8 +163,8 @@ def get_electricity_rate(lat: float, lon: float) -> dict:
             "currency_symbol":    currency_symbol,
             "country_code":       country_code,
             "country_name":       country_name,
-            "state":              address.get("state", address.get("province", "")),
-            "city":               address.get("city", address.get("town", address.get("village", ""))),
+            "state":              state,
+            "city":               city,
             "source":             "gps_geocoded"
         }
         

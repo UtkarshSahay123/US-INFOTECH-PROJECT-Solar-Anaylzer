@@ -18,7 +18,14 @@ def get_weather_sunrise_sunset(lat: float, lon: float) -> dict:
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=sunrise,sunset,uv_index_max,shortwave_radiation_sum&current_weather=true&timezone=auto"
     
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
+        
+        # If open-meteo throws a 400 Bad Request, it's often due to 
+        # auto-timezone failing for empty ocean coords or unmapped areas.
+        if response.status_code == 400:
+            url_fallback = url.replace("timezone=auto", "timezone=GMT")
+            response = requests.get(url_fallback, timeout=5)
+            
         response.raise_for_status()
         data = response.json()
         
@@ -44,12 +51,13 @@ def get_weather_sunrise_sunset(lat: float, lon: float) -> dict:
         return result
     except Exception as e:
         # Fallback metrics in case API fails
+        now = datetime.utcnow().strftime("%Y-%m-%d")
         return {
             "temperature_celsius": 30.0,
             "windspeed_kmh": 5.0,
             "weather_code": 0,
-            "sunrise": "06:00",
-            "sunset": "18:00",
+            "sunrise": f"{now}T06:00",
+            "sunset": f"{now}T18:00",
             "daily_radiation_mj_m2": 20.5,
             "error": str(e)
         }
