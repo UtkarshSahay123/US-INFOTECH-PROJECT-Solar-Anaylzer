@@ -1229,7 +1229,8 @@
             } else {
                 addSolarChatMessage('bot', reply);
             }
-            if (fromVoice || solarVoiceReplyEnabled) speakSolarReply(reply);
+            // Speak only for voice-originated queries.
+            if (fromVoice) speakSolarReply(reply);
         } catch (e) {
             const errMsg = 'I hit a temporary error while fetching live knowledge. Please try again.';
             const bubbles = solarChatMessages.querySelectorAll('div > div');
