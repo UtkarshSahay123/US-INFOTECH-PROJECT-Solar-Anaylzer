@@ -1,0 +1,27 @@
+﻿============================================================
+TRIAL RUN: Andhra Pradesh GPS Geocoding
+============================================================
+
+[1] Calling BigDataCloud API for (16.5062, 80.648)...
+    [OK] API Response (HTTP 200)
+    Country Code : IN
+    Country Name : India
+    State        : andhra pradesh
+    City/Locality: Vijayawada
+
+[2] Looking up electricity rate...
+    [OK] State-specific rate matched: 'andhra pradesh'
+    Rate     : Rs 6.64/kWh
+    Currency : INR
+    Source   : gps_geocoded
+
+[3] Verification:
+    [PASS] Andhra Pradesh detected, rate = Rs 6.64/kWh (expected Rs 6.64)
+
+[4] Confirming old Nominatim API is blocked...
+    Nominatim HTTP Status: 403
+    [CONFIRMED] Nominatim returns 403 Forbidden -- BigDataCloud switch was correct
+
+============================================================
+TRIAL COMPLETE
+============================================================
