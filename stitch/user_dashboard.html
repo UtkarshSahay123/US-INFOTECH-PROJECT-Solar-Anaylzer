@@ -268,10 +268,32 @@
 </footer>
 </main>
 <div class="fixed bottom-8 right-8">
-<button class="w-14 h-14 bg-primary text-background-dark rounded-full shadow-xl flex items-center justify-center sun-shine-hover group relative">
+<button id="solarChatFab" class="w-14 h-14 bg-primary text-background-dark rounded-full shadow-xl flex items-center justify-center sun-shine-hover group relative">
 <span class="material-icons">support_agent</span>
 <span class="absolute right-full mr-4 bg-background-dark text-white px-3 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity border border-primary/20">Solar Expert Chat</span>
 </button>
+</div>
+
+<!-- Solar Chat Panel -->
+<div id="solarChatPanel" class="hidden fixed bottom-28 right-8 w-[360px] max-w-[92vw] h-[520px] bg-surface border border-primary/20 rounded-2xl shadow-2xl z-[120] overflow-hidden flex-col">
+    <div class="px-4 py-3 border-b border-primary/20 bg-surface-bright/40 flex items-center justify-between">
+        <div>
+            <h4 class="text-sm font-bold text-white">Solar Expert Chat</h4>
+            <p class="text-[10px] text-slate-400">Ask about panel sizing, count, and pricing</p>
+        </div>
+        <button id="solarChatClose" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
+    </div>
+    <div id="solarChatMessages" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3 bg-surface/40"></div>
+    <div class="p-3 border-t border-primary/20 bg-surface-bright/30">
+        <div class="flex items-center gap-2 mb-2">
+            <button id="solarChatMicBtn" class="px-3 py-2 rounded-lg bg-surface border border-primary/20 text-primary hover:bg-primary/10 text-xs font-semibold">🎙 Mic</button>
+            <button id="solarChatVoiceToggle" class="px-3 py-2 rounded-lg bg-surface border border-primary/20 text-slate-200 hover:bg-primary/10 text-xs font-semibold">🔊 Voice Reply: ON</button>
+        </div>
+        <div class="flex gap-2">
+            <input id="solarChatInput" type="text" placeholder="Type your solar question..." class="flex-1 bg-surface border border-primary/20 rounded-lg p-2 text-sm text-white outline-none focus:border-primary">
+            <button id="solarChatSend" class="px-4 rounded-lg bg-primary text-background-dark font-bold text-sm">Send</button>
+        </div>
+    </div>
 </div>
 
 <!-- hidden inputs -->
@@ -1053,6 +1075,169 @@
             historyModal.classList.remove('flex');
         }
     }
+
+    // ── Solar Expert Chat (text + voice) ──────────────────────────────────────
+    const solarChatFab = document.getElementById('solarChatFab');
+    const solarChatPanel = document.getElementById('solarChatPanel');
+    const solarChatClose = document.getElementById('solarChatClose');
+    const solarChatMessages = document.getElementById('solarChatMessages');
+    const solarChatInput = document.getElementById('solarChatInput');
+    const solarChatSend = document.getElementById('solarChatSend');
+    const solarChatMicBtn = document.getElementById('solarChatMicBtn');
+    const solarChatVoiceToggle = document.getElementById('solarChatVoiceToggle');
+    let solarVoiceReplyEnabled = true;
+    let solarRecognition = null;
+    let solarListening = false;
+
+    function addSolarChatMessage(role, text) {
+        const row = document.createElement('div');
+        row.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
+        const bubble = document.createElement('div');
+        bubble.className = role === 'user'
+            ? 'max-w-[85%] bg-primary text-background-dark rounded-xl px-3 py-2 text-sm font-medium'
+            : 'max-w-[85%] bg-surface border border-primary/20 text-slate-100 rounded-xl px-3 py-2 text-sm';
+        bubble.textContent = text;
+        row.appendChild(bubble);
+        solarChatMessages.appendChild(row);
+        solarChatMessages.scrollTop = solarChatMessages.scrollHeight;
+    }
+
+    function speakSolarReply(text) {
+        if (!solarVoiceReplyEnabled || !('speechSynthesis' in window)) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function getCurrencySymbol(code) {
+        const symbols = {USD:'$', EUR:'€', GBP:'£', INR:'₹', JPY:'¥', CAD:'C$', AUD:'A$', CNY:'¥', CHF:'CHF ', KRW:'₩', BRL:'R$', SGD:'S$'};
+        return symbols[code] || (code + ' ');
+    }
+
+    function getSolarAssistantReply(questionRaw) {
+        const question = (questionRaw || '').toLowerCase().trim();
+        const len = parseFloat(inputPanelLen?.value) || 2.0;
+        const wid = parseFloat(inputPanelWid?.value) || 1.0;
+        const panelArea = len * wid;
+        const area = window.currentFlatData?.detectedAreaM2 || null;
+        const maxPanels = window.currentFlatData?.maxPanels || null;
+        const currencyCode = window.currentFlatData?.currencyCode || baseCurrencyCode || 'USD';
+        const currencySymbol = window.currentFlatData?.currencySymbol || getCurrencySymbol(currencyCode);
+
+        if (!question) return "Please type your question. You can ask about panel size, panel count, energy, or panel pricing.";
+
+        if (question.includes('how many panel') || question.includes('number of panel') || question.includes('max panel')) {
+            if (maxPanels) return `Based on your latest analysis, around ${maxPanels} panels can fit.`;
+            if (area) return `Your panel size is ${len}m × ${wid}m (${panelArea.toFixed(2)} m² each). On ~${area.toFixed(1)} m² usable area, estimated panel count is about ${Math.floor(area / panelArea)}.`;
+            return `Panel size is ${len}m × ${wid}m (${panelArea.toFixed(2)} m² each). Run one analysis image first and I will give a precise panel count.`;
+        }
+
+        if (question.includes('panel size') || question.includes('dimension') || question.includes('which panel')) {
+            return `Current configured panel dimensions are ${len}m × ${wid}m (${panelArea.toFixed(2)} m² each). For homes, common practical sizes are around 2.0m × 1.0m. If your roof has narrow spaces, try smaller width panels to increase fit flexibility.`;
+        }
+
+        if (question.includes('price') || question.includes('rate') || question.includes('cost') || question.includes('current rate')) {
+            const approxPerWatt = {
+                'USD': [0.20, 0.45], 'INR': [18, 35], 'EUR': [0.18, 0.40], 'GBP': [0.16, 0.35],
+                'CAD': [0.28, 0.55], 'AUD': [0.30, 0.60]
+            };
+            const range = approxPerWatt[currencyCode] || [0.20, 0.45];
+            return `Typical panel market range is roughly ${currencySymbol}${range[0]} to ${currencySymbol}${range[1]} per watt (${currencyCode}), depending on brand, efficiency tier, warranty, and installation region. If you share your desired system size (kW), I can estimate total panel budget.`;
+        }
+
+        if (question.includes('profit') || question.includes('saving') || question.includes('roi')) {
+            if (window.currentFlatData?.monthlyProfitLocal != null) {
+                return `Your latest estimated monthly savings are about ${currencySymbol}${Number(window.currentFlatData.monthlyProfitLocal).toFixed(2)} (${currencyCode}).`;
+            }
+            return "Run an analysis first, then I can explain your monthly savings and ROI from your exact roof data.";
+        }
+
+        if (question.includes('efficiency') || question.includes('mono') || question.includes('poly')) {
+            return "Monocrystalline panels are usually the best default for residential rooftops due to higher efficiency and better space use. Polycrystalline can be cheaper but usually needs more area for the same power.";
+        }
+
+        return "I can help with panel count, panel dimensions, expected savings, and approximate market prices. Try asking: 'How many panels can fit?', 'What panel size should I use?', or 'What is current panel rate?'";
+    }
+
+    function handleSolarChatSubmit(fromVoice = false) {
+        const text = solarChatInput.value.trim();
+        if (!text) return;
+        addSolarChatMessage('user', text);
+        const reply = getSolarAssistantReply(text);
+        setTimeout(() => {
+            addSolarChatMessage('bot', reply);
+            if (fromVoice || solarVoiceReplyEnabled) speakSolarReply(reply);
+        }, 180);
+        solarChatInput.value = '';
+    }
+
+    if (solarChatFab) {
+        solarChatFab.addEventListener('click', () => {
+            solarChatPanel.classList.remove('hidden');
+            solarChatPanel.classList.add('flex');
+            if (!solarChatMessages.dataset.welcomed) {
+                addSolarChatMessage('bot', 'Hi! I am your Solar Expert. Ask me about panel count, panel dimensions, rates, or savings.');
+                solarChatMessages.dataset.welcomed = '1';
+            }
+        });
+    }
+    if (solarChatClose) {
+        solarChatClose.addEventListener('click', () => {
+            solarChatPanel.classList.add('hidden');
+            solarChatPanel.classList.remove('flex');
+        });
+    }
+    if (solarChatSend) solarChatSend.addEventListener('click', () => handleSolarChatSubmit(false));
+    if (solarChatInput) {
+        solarChatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleSolarChatSubmit(false);
+        });
+    }
+    if (solarChatVoiceToggle) {
+        solarChatVoiceToggle.addEventListener('click', () => {
+            solarVoiceReplyEnabled = !solarVoiceReplyEnabled;
+            solarChatVoiceToggle.textContent = solarVoiceReplyEnabled ? '🔊 Voice Reply: ON' : '🔇 Voice Reply: OFF';
+        });
+    }
+    if (solarChatMicBtn) {
+        solarChatMicBtn.addEventListener('click', () => {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) {
+                addSolarChatMessage('bot', 'Voice input is not supported in this browser. Please type your question.');
+                return;
+            }
+            if (!solarRecognition) {
+                solarRecognition = new SR();
+                solarRecognition.lang = 'en-US';
+                solarRecognition.interimResults = false;
+                solarRecognition.maxAlternatives = 1;
+                solarRecognition.onresult = (event) => {
+                    const transcript = event.results?.[0]?.[0]?.transcript || '';
+                    solarChatInput.value = transcript;
+                    handleSolarChatSubmit(true);
+                };
+                solarRecognition.onend = () => {
+                    solarListening = false;
+                    solarChatMicBtn.textContent = '🎙 Mic';
+                };
+                solarRecognition.onerror = () => {
+                    solarListening = false;
+                    solarChatMicBtn.textContent = '🎙 Mic';
+                    addSolarChatMessage('bot', 'Could not capture voice clearly. Please try again or type your question.');
+                };
+            }
+            if (!solarListening) {
+                solarListening = true;
+                solarChatMicBtn.textContent = '⏺ Listening...';
+                solarRecognition.start();
+            } else {
+                solarRecognition.stop();
+            }
+        });
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
 </script>
 <script>
