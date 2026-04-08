@@ -65,14 +65,15 @@ async def analyze_solar_opportunity(
     latitude: float = Form(...),
     longitude: float = Form(...),
     panel_length_m: float = Form(2.0),
-    panel_width_m: float = Form(1.0)
+    panel_width_m: float = Form(1.0),
+    gsd_m_px: float = Form(None)
 ):
     try:
         # Read the image
         img_bytes = await image.read()
 
         # Step 1: Detect available roof/field area using YOLOv8
-        area_m2 = detect_solar_area(img_bytes)
+        area_m2 = detect_solar_area(img_bytes, gsd_m_px)
 
         # Step 2: Fetch weather + solar radiation data from Open-Meteo
         weather_data = get_weather_sunrise_sunset(latitude, longitude)

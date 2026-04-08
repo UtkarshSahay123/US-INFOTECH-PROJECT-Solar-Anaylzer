@@ -663,6 +663,12 @@
                     formData.append('longitude', position.coords.longitude);
                     formData.append('panel_length_m', len);
                     formData.append('panel_width_m', wid);
+                    
+                    // If file name hint suggests it's a desktop snapshot, we let backend auto-calibrate
+                    // Otherwise assume standard high-res satellite GSD (0.25 m/px)
+                    if (file.name !== "desktop_snapshot.jpg" && file.name !== "camera_capture.jpg") {
+                        formData.append('gsd_m_px', 0.25);
+                    }
 
                     const response = await fetch('/ml-api/analyze', { method: 'POST', body: formData });
                     
