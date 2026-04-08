@@ -1067,6 +1067,21 @@
     let solarVoiceReplyEnabled = true;
     let solarRecognition = null;
     let solarListening = false;
+    let solarUnhandledGuardBound = false;
+
+    // Guard against extension/injected-script promise errors (e.g., core.js payload)
+    // so they don't break chat UX.
+    if (!solarUnhandledGuardBound) {
+        window.addEventListener('unhandledrejection', (event) => {
+            const msg = String(event?.reason?.message || event?.reason || '');
+            const stack = String(event?.reason?.stack || '');
+            if (msg.includes('reading \'payload\'') || stack.includes('core.js')) {
+                event.preventDefault();
+                console.warn('Ignored external script promise error:', msg);
+            }
+        });
+        solarUnhandledGuardBound = true;
+    }
 
     function addSolarChatMessage(role, text) {
         const row = document.createElement('div');
@@ -1271,7 +1286,11 @@
                 solarRecognition.interimResults = false;
                 solarRecognition.maxAlternatives = 1;
                 solarRecognition.onresult = (event) => {
-                    const transcript = event.results?.[0]?.[0]?.transcript || '';
+                    const transcript = event?.results?.[0]?.[0]?.transcript || '';
+                    if (!transcript) {
+                        addSolarChatMessage('bot', 'I could not hear clearly. Please try again.');
+                        return;
+                    }
                     solarChatInput.value = transcript;
                     handleSolarChatSubmit(true);
                 };
