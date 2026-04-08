@@ -1157,7 +1157,9 @@
         const asksPanelType =
             question.includes('type of solar panel') ||
             (question.includes('type') && question.includes('solar') && question.includes('panel')) ||
-            (question.includes('panel') && (question.includes('residential') || question.includes('house') || question.includes('home')) && question.includes('type'));
+            (question.includes('panel') && (question.includes('residential') || question.includes('house') || question.includes('home')) && question.includes('type')) ||
+            (question.includes('best') && question.includes('solar') && (question.includes('panel') || question.includes('panels')) && (question.includes('home') || question.includes('house') || question.includes('residential'))) ||
+            ((question.includes('which') || question.includes('recommend') || question.includes('good')) && question.includes('solar') && (question.includes('panel') || question.includes('panels')) && (question.includes('home') || question.includes('house') || question.includes('residential')));
 
         if (asksPanelType) {
             return "For residential purposes, monocrystalline solar panels are generally preferred: they are more efficient, need less roof area for the same power, and perform better in low light. Polycrystalline panels are cheaper but larger for the same kW, so they work best when you have a lot of roof space and want to minimize upfront cost.";
