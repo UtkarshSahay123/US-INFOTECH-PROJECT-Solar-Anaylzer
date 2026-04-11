@@ -101,18 +101,49 @@
                             href="technology_page.html">Technology</a>
                     </div>
                 </div>
-                <a class="flex items-center gap-4">
-
-                    <a href="final_login_page.html">
-                        <button
-                            class="bg-primary text-black font-bold text-xs px-6 py-2.5 rounded shadow-[0_0_20px_rgba(19,236,91,0.4)] hover:scale-105 transition-transform">
+                <div class="flex items-center gap-4">
+                    <a href="final_login_page.html" class="hidden md:block">
+                        <button class="bg-primary text-black font-bold text-xs px-6 py-2.5 rounded shadow-[0_0_20px_rgba(19,236,91,0.4)] hover:scale-105 transition-transform">
                             GET STARTED
                         </button>
                     </a>
+                    <button id="mobileMenuBtn" class="md:hidden text-primary focus:outline-none">
+                        <span class="material-symbols-outlined text-3xl">menu</span>
+                    </button>
+                </div>
             </div>
         </div>
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="fixed inset-0 bg-background-dark/95 backdrop-blur-xl z-[60] hidden flex-col items-center justify-center p-8 transition-all duration-300">
+            <button id="closeMenuBtn" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-3xl font-bold">close</span>
+            </button>
+            <div class="flex flex-col items-center gap-10 text-center">
+                <a class="text-3xl font-bold hover:text-primary transition-colors" href="index.html">Home</a>
+                <a class="text-3xl font-bold text-primary" href="technology_page.html">Technology</a>
+                <a class="text-3xl font-bold hover:text-primary transition-colors" href="final_login_page.html">Login</a>
+                <a href="final_login_page.html" class="w-full mt-4">
+                    <button class="w-full bg-primary text-background-dark px-10 py-5 rounded-xl font-black text-xl shadow-[0_0_30px_rgba(19,236,91,0.3)]">
+                        GET STARTED
+                    </button>
+                </a>
+            </div>
         </div>
     </nav>
+    <script>
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        function toggleMenu(show) {
+            if (show) { mobileMenu.classList.remove('hidden'); mobileMenu.classList.add('flex'); document.body.style.overflow = 'hidden'; }
+            else { mobileMenu.classList.add('hidden'); mobileMenu.classList.remove('flex'); document.body.style.overflow = 'auto'; }
+        }
+        if (mobileMenuBtn && closeMenuBtn && mobileMenu) {
+            mobileMenuBtn.onclick = () => toggleMenu(true);
+            closeMenuBtn.onclick = () => toggleMenu(false);
+            mobileMenu.querySelectorAll('a').forEach(link => { link.onclick = () => toggleMenu(false); });
+        }
+    </script>
     <main class="max-w-7xl mx-auto px-6 py-12">
         <section class="mb-24 relative">
             <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-[120px]"></div>

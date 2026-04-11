@@ -33,7 +33,7 @@
     </script>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen flex items-center justify-center pt-20 pb-8">
-<nav class="fixed top-0 w-full z-50 bg-[#0a120d]/90 backdrop-blur-md border-b border-white/10 hidden lg:block">
+<nav class="fixed top-0 w-full z-50 bg-[#0a120d]/90 backdrop-blur-md border-b border-white/10">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="flex justify-between h-20 items-center">
 <a href="index.html" class="flex items-center gap-2 cursor-pointer no-underline">
@@ -47,9 +47,44 @@
 <a class="text-sm font-medium text-slate-300 hover:text-[#13ec5b] transition-colors no-underline" href="final_login_page.html">Login</a>
 <a class="text-sm font-medium text-slate-300 hover:text-[#13ec5b] transition-colors no-underline" href="technology_page.html">Technology</a>
 </div>
+<div class="md:hidden">
+    <button id="mobileMenuBtn" class="text-[#13ec5b] focus:outline-none">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+    </button>
 </div>
+</div>
+</div>
+<!-- Mobile Menu Overlay -->
+<div id="mobileMenu" class="fixed inset-0 bg-[#0a120d]/95 backdrop-blur-xl z-[60] hidden flex-col items-center justify-center p-8 transition-all duration-300">
+    <button id="closeMenuBtn" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
+        <span class="material-symbols-outlined text-3xl font-bold">close</span>
+    </button>
+    <div class="flex flex-col items-center gap-10 text-center">
+        <a class="text-3xl font-bold text-white hover:text-[#13ec5b] transition-colors" href="index.html">Home</a>
+        <a class="text-3xl font-bold text-white hover:text-[#13ec5b] transition-colors" href="final_login_page.html">Login</a>
+        <a class="text-3xl font-bold text-white hover:text-[#13ec5b] transition-colors" href="technology_page.html">Technology</a>
+        <a href="final_login_page.html" class="w-full mt-4">
+            <button class="w-full bg-[#13ec5b] text-[#102216] px-10 py-5 rounded-xl font-black text-xl shadow-[0_0_30px_rgba(19,236,91,0.3)]">
+                LOGIN NOW
+            </button>
+        </a>
+    </div>
 </div>
 </nav>
+<script>
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    function toggleMenu(show) {
+        if (show) { mobileMenu.classList.remove('hidden'); mobileMenu.classList.add('flex'); document.body.style.overflow = 'hidden'; }
+        else { mobileMenu.classList.add('hidden'); mobileMenu.classList.remove('flex'); document.body.style.overflow = 'auto'; }
+    }
+    if (mobileMenuBtn && closeMenuBtn && mobileMenu) {
+        mobileMenuBtn.onclick = () => toggleMenu(true);
+        closeMenuBtn.onclick = () => toggleMenu(false);
+        mobileMenu.querySelectorAll('a').forEach(link => { link.onclick = () => toggleMenu(false); });
+    }
+</script>
 
 <div class="flex flex-row w-full max-w-6xl min-h-[85vh] shadow-2xl rounded-xl overflow-hidden bg-white dark:bg-slate-900 m-4 mt-12">
 <!-- Left Side: Visual/Context -->
@@ -160,7 +195,7 @@
 <span class="px-3 bg-white dark:bg-slate-900 text-slate-500">Or sign up with</span>
 </div>
 </div>
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <a href="/auth-api/oauth2/authorization/google" class="flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium text-slate-700 dark:text-slate-300">
 <svg class="w-5 h-5" viewbox="0 0 24 24">
 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>

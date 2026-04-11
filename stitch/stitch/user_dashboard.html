@@ -99,15 +99,15 @@
 <span class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Solar<span class="text-primary">Pulse</span></span>
 </div>
 <div class="hidden md:flex items-center space-x-8">
-<a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="technology_page.html">Technology</a>
+<a class="text-sm font-medium hover:text-primary transition-colors text-slate-900 dark:text-slate-300" href="index.html">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors text-slate-900 dark:text-slate-300" href="technology_page.html">Technology</a>
 <div class="h-4 w-[1px] bg-primary/20"></div>
 <div class="relative flex items-center gap-3 cursor-pointer group p-1 -m-1 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(242,242,13,0.15)] hover:bg-primary/5">
 <div class="text-right">
 <p id="userNameDisplay" class="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors drop-shadow-[0_0_2px_rgba(242,242,13,0)] group-hover:drop-shadow-[0_0_8px_rgba(242,242,13,0.5)]">User</p>
-<p class="text-[10px] text-primary/70">Residential Tier</p>
+<p class="text-[10px] text-primary/70 text-right">Residential Tier</p>
 </div>
-<img alt="User Profile" class="w-10 h-10 rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:shadow-[0_0_15px_rgba(242,242,13,0.6)] transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp8q0glyOhOLV8pRfx7PX1DrPLpVB9sEA1KclWjbL3nAFds5R6R0FG1gxgSfwZifKSfhNsZigsRnLkfQ_uNW-0bJfjBDrkNoOMA-zcGnU3xhHLuY5iVm-RAeVXFW7ZSTUgUoJwd-w5vyhcT1e4EWaJf_g7k4KC_1u2SPkWkywu3a5p4eUINxUtemQs8BBKwaxEPSAN6ngohP8ZYzShuiEi4YlS3hYWm5aFA41VIuJZrNkYpf2FDcdGuIaIcv1RE14IVMxtPxnb60I"/>
+<img id="userProfileImg" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:shadow-[0_0_15px_rgba(242,242,13,0.6)] transition-all duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp8q0glyOhOLV8pRfx7PX1DrPLpVB9sEA1KclWjbL3nAFds5R6R0FG1gxgSfwZifKSfhNsZigsRnLkfQ_uNW-0bJfjBDrkNoOMA-zcGnU3xhHLuY5iVm-RAeVXFW7ZSTUgUoJwd-w5vyhcT1e4EWaJf_g7k4KC_1u2SPkWkywu3a5p4eUINxUtemQs8BBKwaxEPSAN6ngohP8ZYzShuiEi4YlS3hYWm5aFA41VIuJZrNkYpf2FDcdGuIaIcv1RE14IVMxtPxnb60I"/>
 <span class="material-icons text-primary text-sm group-hover:drop-shadow-[0_0_8px_rgba(242,242,13,0.8)] transition-all">expand_more</span>
 <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-surface rounded-lg shadow-xl border border-primary/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60]">
     <a href="#" onclick="logoutUser()" class="px-4 py-3 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition-colors flex items-center gap-2">
@@ -117,8 +117,45 @@
 </div>
 </div>
 </div>
+<div class="md:hidden flex items-center">
+    <button id="mobileMenuBtn" class="text-primary focus:outline-none">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+    </button>
+</div>
+</div>
+</div>
+<!-- Mobile Menu Overlay -->
+<div id="mobileMenu" class="fixed inset-0 bg-background-dark/95 backdrop-blur-xl z-[60] hidden flex-col items-center justify-center p-8 transition-all duration-300">
+    <button id="closeMenuBtn" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
+        <span class="material-symbols-outlined text-3xl font-bold">close</span>
+    </button>
+    <div class="flex flex-col items-center gap-10 text-center w-full">
+        <img id="mobileUserImg" class="w-20 h-20 rounded-full border-4 border-primary shadow-[0_0_30px_rgba(242,242,13,0.3)] mb-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp8q0glyOhOLV8pRfx7PX1DrPLpVB9sEA1KclWjbL3nAFds5R6R0FG1gxgSfwZifKSfhNsZigsRnLkfQ_uNW-0bJfjBDrkNoOMA-zcGnU3xhHLuY5iVm-RAeVXFW7ZSTUgUoJwd-w5vyhcT1e4EWaJf_g7k4KC_1u2SPkWkywu3a5p4eUINxUtemQs8BBKwaxEPSAN6ngohP8ZYzShuiEi4YlS3hYWm5aFA41VIuJZrNkYpf2FDcdGuIaIcv1RE14IVMxtPxnb60I" />
+        <p id="mobileUserName" class="text-2xl font-bold text-white mb-6">User</p>
+        <a class="text-2xl font-bold text-white hover:text-primary transition-colors" href="index.html">Home</a>
+        <a class="text-2xl font-bold text-white hover:text-primary transition-colors" href="technology_page.html">Technology</a>
+        <button onclick="logoutUser()" class="text-2xl font-bold text-red-500 hover:text-red-400 transition-colors flex items-center gap-2">
+            <span class="material-icons">logout</span> Logout
+        </button>
+        <button onclick="toggleMenu(false)" class="w-full bg-primary text-background-dark px-10 py-4 rounded-xl font-black text-xl shadow-[0_0_30px_rgba(242,242,13,0.3)] mt-4">
+            BACK TO DASHBOARD
+        </button>
+    </div>
 </div>
 </nav>
+<script>
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    function toggleMenu(show) {
+        if (show) { mobileMenu.classList.remove('hidden'); mobileMenu.classList.add('flex'); document.body.style.overflow = 'hidden'; }
+        else { mobileMenu.classList.add('hidden'); mobileMenu.classList.remove('flex'); document.body.style.overflow = 'auto'; }
+    }
+    if (mobileMenuBtn && closeMenuBtn) {
+        mobileMenuBtn.onclick = () => toggleMenu(true);
+        closeMenuBtn.onclick = () => toggleMenu(false);
+    }
+</script>
 <main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
 <header class="flex flex-col md:flex-row md:items-end justify-between gap-6">
 <div>
@@ -174,7 +211,7 @@
 </div>
 </div>
 </div>
-<div class="grid grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <div class="bg-surface p-4 rounded-xl border border-primary/5">
 <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Daily Irradiance</p>
 <p class="text-2xl font-bold"><span id="metricIrradiance">5.8</span> <span class="text-sm font-normal text-slate-400">kWh/m²</span></p>
@@ -423,9 +460,9 @@
                 const capitalizedName = namePart.split('.').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
                 
                 const userNameDisplay = document.getElementById('userNameDisplay');
-                if (userNameDisplay) {
-                    userNameDisplay.innerText = capitalizedName;
-                }
+                const mobileUserName = document.getElementById('mobileUserName');
+                if (userNameDisplay) userNameDisplay.innerText = capitalizedName;
+                if (mobileUserName) mobileUserName.innerText = capitalizedName;
             }
         } else {
             window.location.href = 'final_login_page.html'; // protect dashboard if not logged in
