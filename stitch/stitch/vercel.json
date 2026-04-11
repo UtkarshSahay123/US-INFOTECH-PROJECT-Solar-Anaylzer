@@ -5,6 +5,14 @@
       "destination": "https://us-infotech-project-solar-anaylzer.onrender.com/:path*"
     },
     {
+      "source": "/login/oauth2/:path*",
+      "destination": "https://us-infotech-project-solar-anaylzer.onrender.com/login/oauth2/:path*"
+    },
+    {
+      "source": "/oauth2/:path*",
+      "destination": "https://us-infotech-project-solar-anaylzer.onrender.com/oauth2/:path*"
+    },
+    {
       "source": "/ml-api/:path*",
       "destination": "https://solarpulse-ml-engine.onrender.com/:path*"
     }
