@@ -131,5 +131,51 @@ async def analyze_solar_opportunity(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/recalculate")
+async def recalculate_solar_opportunity(
+    latitude: float = Form(...),
+    longitude: float = Form(...),
+    area_m2: float = Form(...),
+    panel_length_m: float = Form(2.0),
+    panel_width_m: float = Form(1.0),
+    manual_capacity_kw: float = Form(...),
+    electricity_rate_local: float = Form(...),
+    currency_code: str = Form("USD"),
+    currency_symbol: str = Form("$"),
+    weather_temp: float = Form(None),
+    weather_wind: float = Form(None),
+    weather_code: int = Form(None),
+    weather_sunrise: str = Form(""),
+    weather_sunset: str = Form(""),
+    weather_radiation: float = Form(None)
+):
+    try:
+        # Fetch weather data (using provided or defaults)
+        weather_data = get_weather_sunrise_sunset(
+            latitude, longitude,
+            weather_temp, weather_wind, weather_code,
+            weather_sunrise, weather_sunset, weather_radiation
+        )
+
+        # Recalculate with manual capacity
+        result = calculate_energy_and_profit(
+            area_m2               = area_m2,
+            panel_length          = panel_length_m,
+            panel_width           = panel_width_m,
+            weather_data          = weather_data,
+            latitude              = latitude,
+            electricity_rate_local = electricity_rate_local,
+            currency_code         = currency_code,
+            currency_symbol       = currency_symbol,
+            manual_capacity_kw    = manual_capacity_kw
+        )
+
+        return {
+            "status": "success",
+            "financial_analysis": result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

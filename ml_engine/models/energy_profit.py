@@ -60,17 +60,26 @@ def calculate_energy_and_profit(
     latitude: float = 20.0,
     electricity_rate_local: float = 0.12,
     currency_code: str = "USD",
-    currency_symbol: str = "$"
+    currency_symbol: str = "$",
+    manual_capacity_kw: float = None
 ) -> dict:
     """
     Full physics + financial model for solar energy and profit estimation.
     Profit is calculated and returned in the LOCAL CURRENCY of the user's GPS location.
+    If manual_capacity_kw is provided, it overrides calculation from area_m2.
     """
 
     # ── 1. Panel packing ──────────────────────────────────────────────────────
     panel_area   = panel_length * panel_width
-    usable_area  = area_m2 * USABLE_AREA_RATIO
-    max_panels   = math.floor(usable_area / panel_area)
+    
+    if manual_capacity_kw is not None and manual_capacity_kw > 0:
+        system_capacity_kw = manual_capacity_kw
+        max_panels = math.ceil(system_capacity_kw / (STANDARD_PANEL_WATT / 1000.0))
+        usable_area = area_m2 * USABLE_AREA_RATIO # still keep track of area if needed
+    else:
+        usable_area  = area_m2 * USABLE_AREA_RATIO
+        max_panels   = math.floor(usable_area / panel_area)
+        system_capacity_kw = max_panels * (STANDARD_PANEL_WATT / 1000.0)
 
     zero_result = {
         "max_panels": 0, "system_capacity_kw": 0,
@@ -84,11 +93,10 @@ def calculate_energy_and_profit(
         "currency_code": currency_code, "currency_symbol": currency_symbol,
     }
 
-    if max_panels <= 0:
+    if max_panels <= 0 and (manual_capacity_kw is None or manual_capacity_kw <= 0):
         return zero_result
 
-    # ── 2. System capacity ────────────────────────────────────────────────────
-    system_capacity_kw = max_panels * (STANDARD_PANEL_WATT / 1000.0)
+    # ── 2. System capacity was handled above ──────────────────────────────────
 
     # ── 3. Solar radiation → Peak Sun Hours ───────────────────────────────────
     radiation_mj   = weather_data.get("daily_radiation_mj_m2", 20.0)
@@ -106,7 +114,13 @@ def calculate_energy_and_profit(
     shading_factor = get_shading_factor(weather_code)
 
     # ── 7. Energy: E = A × eff(T) × H × PR × tilt × shading ─────────────────
+    # If manual capacity, we calculate effective area based on that capacity
+    # P = A * Eff_STC * 1000 => A = P / (Eff_STC * 1000)
+    # total_active_area = system_capacity_kw / (BASE_PANEL_EFFICIENCY)
+    
+    # Actually, it's simpler to stay consistent with panels:
     total_active_area  = max_panels * panel_area
+    
     daily_energy_kwh   = (
         total_active_area * efficiency * peak_sun_hours
         * PERFORMANCE_RATIO * tilt_factor * shading_factor

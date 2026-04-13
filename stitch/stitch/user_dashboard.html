@@ -800,6 +800,8 @@
                     const data = await response.json();
                     
                     const flatData = {
+                        latitude:         coords.latitude,
+                        longitude:        coords.longitude,
                         detectedAreaM2:   data.vision_analysis.detected_area_m2,
                         systemCapacityKw: data.financial_analysis.system_capacity_kw,
                         maxPanels:        data.financial_analysis.max_panels,
@@ -815,8 +817,10 @@
                         // Weather
                         temperatureCelsius: data.weather.temperature_celsius,
                         windspeedKmh:       data.weather.windspeed_kmh,
+                        weatherCode:        data.weather.weather_code,
                         sunrise:            data.weather.sunrise,
                         sunset:             data.weather.sunset,
+                        dailyRadiationMjM2: data.weather.daily_radiation_mj_m2,
                         // ML diagnostic fields
                         panelEfficiencyPct:   data.financial_analysis.panel_efficiency_pct,
                         tiltCorrectionFactor: data.financial_analysis.tilt_correction_factor,
@@ -916,23 +920,30 @@
                             <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Detected Usable Area</p>
                             <p class="text-xl font-bold text-white">${data.detectedAreaM2.toFixed(1)} <span class="text-sm">m²</span></p>
                         </div>
-                        <div class="bg-surface p-4 rounded-lg border border-primary/10">
-                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">System Capacity</p>
-                            <p class="text-xl font-bold text-white">${data.systemCapacityKw.toFixed(2)} <span class="text-sm">kW</span></p>
+                        <div class="bg-surface p-4 rounded-lg border border-primary/10 group/cap">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">System Capacity</p>
+                            <div class="flex items-center gap-2">
+                                <input type="number" step="0.1" id="inputManualCapacity" value="${data.systemCapacityKw.toFixed(2)}" 
+                                    class="text-xl font-bold text-white bg-surface-bright/30 border border-transparent hover:border-primary/30 focus:border-primary focus:ring-0 rounded px-1 w-24 outline-none transition-all">
+                                <span class="text-sm font-bold text-slate-400">kW</span>
+                                <button onclick="window.recalculateCapacity()" class="p-1.5 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all opacity-0 group-hover/cap:opacity-100" title="Recalculate all metrics">
+                                    <span class="material-icons text-xs">refresh</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="mb-6">
                         <h5 class="text-sm font-bold text-slate-300 mb-2 border-b border-primary/10 pb-2">Solar Panel Estimation</h5>
                         <ul class="text-sm text-slate-400 space-y-2">
-                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Max Panels Fit:</span> <span class="text-white font-bold text-lg">${data.maxPanels}</span></li>
+                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Max Panels Fit:</span> <span id="displayMaxPanels" class="text-white font-bold text-lg">${data.maxPanels}</span></li>
                             <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Panel Dimensions:</span> <span class="text-white font-bold">${data.panelDimensions}</span></li>
                         </ul>
                     </div>
                     <div class="mb-6">
                         <h5 class="text-sm font-bold text-slate-300 mb-2 border-b border-primary/10 pb-2">Energy & Profit (Estimated)</h5>
                         <ul class="text-sm text-slate-400 space-y-2">
-                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Daily Energy:</span> <span class="text-white font-bold">${data.dailyEnergyKwh.toFixed(1)} kWh</span></li>
-                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Monthly Energy:</span> <span class="text-white font-bold">${data.monthlyEnergyKwh.toFixed(1)} kWh</span></li>
+                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Daily Energy:</span> <span id="displayDailyEnergy" class="text-white font-bold">${data.dailyEnergyKwh.toFixed(1)} kWh</span></li>
+                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Monthly Energy:</span> <span id="displayMonthlyEnergy" class="text-white font-bold">${data.monthlyEnergyKwh.toFixed(1)} kWh</span></li>
                             <li class="flex justify-between items-center bg-surface/50 p-2 rounded border border-eco-green/30">
                                 <span>Monthly Profit:</span> 
                                 <div class="flex items-center gap-2">
@@ -949,7 +960,7 @@
                         <ul class="text-sm text-slate-400 space-y-2">
                             <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Temperature / Wind:</span> <span class="text-white font-bold">${data.temperatureCelsius}°C / ${data.windspeedKmh}km/h</span></li>
                             <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Sunrise / Sunset:</span> <span class="text-white font-bold">${sunriseStr} / ${sunsetStr}</span></li>
-                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Panel Efficiency (temp-corrected):</span> <span class="text-primary font-bold">${data.panelEfficiencyPct ?? '--'}%</span></li>
+                            <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Panel Efficiency (temp-corrected):</span> <span id="displayEfficiency" class="text-primary font-bold">${data.panelEfficiencyPct ?? '--'}%</span></li>
                             <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Tilt Correction Factor:</span> <span class="text-white font-bold">×${data.tiltCorrectionFactor ?? '1.0'}</span></li>
                             <li class="flex justify-between items-center bg-surface/50 p-2 rounded"><span>Shading Factor:</span> <span class="text-white font-bold">×${data.shadingFactor ?? '1.0'}</span></li>
                         </ul>
@@ -967,6 +978,74 @@
             </div>
         `;
         
+        // Recalculate Logic
+        window.recalculateCapacity = async function() {
+            const manualCap = parseFloat(document.getElementById('inputManualCapacity').value);
+            if (isNaN(manualCap) || manualCap <= 0) return;
+
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<span class="material-icons text-xs animate-spin">refresh</span>`;
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('latitude', window.currentFlatData.latitude);
+            formData.append('longitude', window.currentFlatData.longitude);
+            formData.append('area_m2', window.currentFlatData.detectedAreaM2);
+            formData.append('manual_capacity_kw', manualCap);
+            formData.append('electricity_rate_local', window.currentFlatData.electricityRateLocal);
+            formData.append('currency_code', window.currentFlatData.currencyCode);
+            formData.append('currency_symbol', window.currentFlatData.currencySymbol);
+            
+            // Weather context
+            formData.append('weather_temp', window.currentFlatData.temperatureCelsius);
+            formData.append('weather_wind', window.currentFlatData.windspeedKmh);
+            formData.append('weather_code', window.currentFlatData.weatherCode);
+            formData.append('weather_sunrise', window.currentFlatData.sunrise);
+            formData.append('weather_sunset', window.currentFlatData.sunset);
+            formData.append('weather_radiation', window.currentFlatData.dailyRadiationMjM2);
+
+            try {
+                const res = await fetch('/ml-api/recalculate', { method: 'POST', body: formData });
+                if (res.ok) {
+                    const result = await res.json();
+                    const fa = result.financial_analysis;
+
+                    // Update UI
+                    document.getElementById('displayMaxPanels').innerText = fa.max_panels;
+                    document.getElementById('displayDailyEnergy').innerText = fa.daily_energy_kwh.toFixed(1) + ' kWh';
+                    document.getElementById('displayMonthlyEnergy').innerText = fa.monthly_energy_kwh.toFixed(1) + ' kWh';
+                    document.getElementById('displayEfficiency').innerText = fa.panel_efficiency_pct + '%';
+                    
+                    // Update Profit (accounting for current currency selection)
+                    baseProfitLocal = fa.monthly_profit_local;
+                    const targetCurr = document.getElementById('currencySelector').value;
+                    const localToUsdRate = exchangeRates[baseCurrencyCode] || 1;
+                    const usdAmount = baseProfitLocal / localToUsdRate;
+                    const converted = usdAmount * (exchangeRates[targetCurr] || 1);
+                    const symbols = {USD:'$', EUR:'€', GBP:'£', INR:'₹', JPY:'¥', CAD:'C$', AUD:'A$', CNY:'¥', CHF:'CHF ', KRW:'₩', BRL:'R$', SGD:'S$'};
+                    const symbol = symbols[targetCurr] || (targetCurr + ' ');
+                    document.getElementById('displayProfit').innerText = symbol + converted.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+
+                    // Update stored data for saving
+                    window.currentFlatData.systemCapacityKw = fa.system_capacity_kw;
+                    window.currentFlatData.maxPanels = fa.max_panels;
+                    window.currentFlatData.dailyEnergyKwh = fa.daily_energy_kwh;
+                    window.currentFlatData.monthlyEnergyKwh = fa.monthly_energy_kwh;
+                    window.currentFlatData.monthlyProfitLocal = fa.monthly_profit_local;
+                    window.currentFlatData.monthlyProfitUsd = fa.monthly_profit_usd;
+
+                    // Update CO2 card if visible
+                    if (cardCo2) cardCo2.innerText = ((fa.monthly_energy_kwh * 12) * 0.0004).toFixed(1);
+                }
+            } catch (err) {
+                console.error("Recalculation failed", err);
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        };
+
         // Currency conversion: local → USD → target
         document.getElementById('currencySelector').addEventListener('change', (e) => {
            const targetCurr = e.target.value;
